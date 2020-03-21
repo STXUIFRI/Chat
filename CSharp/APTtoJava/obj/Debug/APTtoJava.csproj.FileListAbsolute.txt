@@ -1,0 +1,9 @@
+C:\0EE934262B1635B7\source\git\SelfAPI\APTtoJava\bin\Debug\APTtoJava.exe.config
+C:\0EE934262B1635B7\source\git\SelfAPI\APTtoJava\bin\Debug\APTtoJava.exe
+C:\0EE934262B1635B7\source\git\SelfAPI\APTtoJava\bin\Debug\APTtoJava.pdb
+C:\0EE934262B1635B7\source\git\SelfAPI\APTtoJava\obj\Debug\APTtoJava.exe
+C:\0EE934262B1635B7\source\git\SelfAPI\APTtoJava\obj\Debug\APTtoJava.pdb
+C:\0EE934262B1635B7\source\git\SelfAPI\APTtoJava\bin\Debug\Newtonsoft.Json.dll
+C:\0EE934262B1635B7\source\git\SelfAPI\APTtoJava\bin\Debug\Newtonsoft.Json.xml
+C:\0EE934262B1635B7\source\git\SelfAPI\APTtoJava\obj\Debug\APTtoJava.csprojAssemblyReference.cache
+C:\0EE934262B1635B7\source\git\SelfAPI\APTtoJava\obj\Debug\APTtoJava.csproj.CopyComplete

@@ -1,0 +1,8 @@
+C:\0EE934262B1635B7\source\git\SelfAPI\ChatLib\bin\Debug\netstandard2.0\ChatLib.deps.json
+C:\0EE934262B1635B7\source\git\SelfAPI\ChatLib\bin\Debug\netstandard2.0\ChatLib.dll
+C:\0EE934262B1635B7\source\git\SelfAPI\ChatLib\obj\Debug\netstandard2.0\ChatLib.csprojAssemblyReference.cache
+C:\0EE934262B1635B7\source\git\SelfAPI\ChatLib\obj\Debug\netstandard2.0\ChatLib.AssemblyInfoInputs.cache
+C:\0EE934262B1635B7\source\git\SelfAPI\ChatLib\obj\Debug\netstandard2.0\ChatLib.AssemblyInfo.cs
+C:\0EE934262B1635B7\source\git\SelfAPI\ChatLib\bin\Debug\netstandard2.0\ChatLib.pdb
+C:\0EE934262B1635B7\source\git\SelfAPI\ChatLib\obj\Debug\netstandard2.0\ChatLib.dll
+C:\0EE934262B1635B7\source\git\SelfAPI\ChatLib\obj\Debug\netstandard2.0\ChatLib.pdb
