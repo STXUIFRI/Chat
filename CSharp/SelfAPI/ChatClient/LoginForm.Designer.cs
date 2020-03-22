@@ -38,23 +38,23 @@
             this.label4 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.panel4 = new System.Windows.Forms.Panel();
             this.panel5 = new System.Windows.Forms.Panel();
+            this.panel4 = new System.Windows.Forms.Panel();
             this.panel6 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.panel7 = new System.Windows.Forms.Panel();
             this.panel8 = new System.Windows.Forms.Panel();
+            this.panel7 = new System.Windows.Forms.Panel();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
-            this.panel7.SuspendLayout();
             this.panel8.SuspendLayout();
+            this.panel7.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(28, 111);
+            this.label1.Location = new System.Drawing.Point(28, 70);
             this.label1.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(144, 29);
@@ -64,7 +64,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(28, 66);
+            this.label2.Location = new System.Drawing.Point(28, 111);
             this.label2.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(135, 29);
@@ -163,14 +163,6 @@
             this.panel2.Size = new System.Drawing.Size(400, 45);
             this.panel2.TabIndex = 9;
             // 
-            // panel4
-            // 
-            this.panel4.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panel4.Location = new System.Drawing.Point(0, 0);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(60, 45);
-            this.panel4.TabIndex = 8;
-            // 
             // panel5
             // 
             this.panel5.Dock = System.Windows.Forms.DockStyle.Right;
@@ -178,6 +170,14 @@
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(60, 45);
             this.panel5.TabIndex = 8;
+            // 
+            // panel4
+            // 
+            this.panel4.Dock = System.Windows.Forms.DockStyle.Left;
+            this.panel4.Location = new System.Drawing.Point(0, 0);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(60, 45);
+            this.panel4.TabIndex = 8;
             // 
             // panel6
             // 
@@ -197,16 +197,6 @@
             this.panel3.Size = new System.Drawing.Size(400, 242);
             this.panel3.TabIndex = 10;
             // 
-            // panel7
-            // 
-            this.panel7.Controls.Add(this.label1);
-            this.panel7.Controls.Add(this.label2);
-            this.panel7.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panel7.Location = new System.Drawing.Point(0, 0);
-            this.panel7.Name = "panel7";
-            this.panel7.Size = new System.Drawing.Size(177, 242);
-            this.panel7.TabIndex = 0;
-            // 
             // panel8
             // 
             this.panel8.Controls.Add(this.passwordBox);
@@ -216,6 +206,16 @@
             this.panel8.Name = "panel8";
             this.panel8.Size = new System.Drawing.Size(223, 242);
             this.panel8.TabIndex = 1;
+            // 
+            // panel7
+            // 
+            this.panel7.Controls.Add(this.label1);
+            this.panel7.Controls.Add(this.label2);
+            this.panel7.Dock = System.Windows.Forms.DockStyle.Left;
+            this.panel7.Location = new System.Drawing.Point(0, 0);
+            this.panel7.Name = "panel7";
+            this.panel7.Size = new System.Drawing.Size(177, 242);
+            this.panel7.TabIndex = 0;
             // 
             // LoginForm
             // 
@@ -235,10 +235,10 @@
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.panel3.ResumeLayout(false);
-            this.panel7.ResumeLayout(false);
-            this.panel7.PerformLayout();
             this.panel8.ResumeLayout(false);
             this.panel8.PerformLayout();
+            this.panel7.ResumeLayout(false);
+            this.panel7.PerformLayout();
             this.ResumeLayout(false);
 
         }

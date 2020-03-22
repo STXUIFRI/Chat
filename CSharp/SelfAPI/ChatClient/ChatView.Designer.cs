@@ -44,6 +44,7 @@
             this.ChatsView = new System.Windows.Forms.ListView();
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.panel4 = new System.Windows.Forms.Panel();
+            this.button3 = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -60,7 +61,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(612, 16);
+            this.label1.Location = new System.Drawing.Point(365, 15);
             this.label1.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(144, 29);
@@ -93,12 +94,13 @@
             // 
             this.button1.AutoSize = true;
             this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Location = new System.Drawing.Point(223, 16);
+            this.button1.Location = new System.Drawing.Point(146, 15);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(122, 41);
+            this.button1.Size = new System.Drawing.Size(93, 41);
             this.button1.TabIndex = 5;
-            this.button1.Text = "Login";
+            this.button1.Text = "lastch";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.Button1_Click);
             // 
             // label4
             // 
@@ -160,6 +162,7 @@
             // panel4
             // 
             this.panel4.AutoSize = true;
+            this.panel4.Controls.Add(this.button3);
             this.panel4.Controls.Add(this.textBox1);
             this.panel4.Controls.Add(this.label4);
             this.panel4.Controls.Add(this.label1);
@@ -171,13 +174,25 @@
             this.panel4.Size = new System.Drawing.Size(900, 73);
             this.panel4.TabIndex = 8;
             // 
+            // button3
+            // 
+            this.button3.AutoSize = true;
+            this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button3.Location = new System.Drawing.Point(245, 14);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(100, 41);
+            this.button3.TabIndex = 10;
+            this.button3.Text = "lastms";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.Button3_Click);
+            // 
             // textBox1
             // 
             this.textBox1.BackColor = System.Drawing.Color.DarkSlateBlue;
             this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox1.Cursor = System.Windows.Forms.Cursors.Default;
             this.textBox1.ForeColor = System.Drawing.Color.OrangeRed;
-            this.textBox1.Location = new System.Drawing.Point(407, 22);
+            this.textBox1.Location = new System.Drawing.Point(520, 13);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(194, 35);
             this.textBox1.TabIndex = 9;
@@ -244,6 +259,7 @@
             this.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.Name = "ChatView";
             this.Size = new System.Drawing.Size(900, 700);
+            this.Load += new System.EventHandler(this.ChatView_Load);
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -274,5 +290,6 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Button button3;
     }
 }

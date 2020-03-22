@@ -18,34 +18,53 @@ namespace ChatClient {
 
         public MainForm() {
             InitializeComponent();
-            this._controller      =  new ChatClientController();
-            this._controller.ToUI += ControllerOnToUI;
+            this._controller             =  new ChatClientController();
+            this._controller.ToUI        += ControllerOnToUI;
+            this._controller.ToUIOnError += ControllerOnToUIOnError;
 
             ChangeDialog( DialogPage.CONNECTION_FORM );
 
             this.connectionForm1.SetController( this._controller );
             this.loginForm1.SetController( this._controller );
             this.registerForm1.SetController( this._controller );
+            this.chatView1.SetController( this._controller );
 
             this.loginForm1.RegisterButton.Click += (sender, args) => AimHelper( DialogPage.REGISTER_FORM, DialogPage.LOGIN_FORM );
             this.registerForm1.LoginButton.Click += (sender, args) => AimHelper( DialogPage.LOGIN_FORM,    DialogPage.REGISTER_FORM );
         }
 
+        private void ControllerOnToUIOnError(Data obj) {
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine( obj.Action );
+            Console.ResetColor();
+        }
+
 
         private void ControllerOnToUI(Data obj) {
             Invoke( new Action( () => {
-                // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
                 switch (obj.Action) {
                     case Data.ActionEnum.CONNECTED:
                         AimHelper( DialogPage.LOGIN_FORM, DialogPage.CONNECTION_FORM );
                         break;
                     case Data.ActionEnum.SUCCEED_REGISTER: {
-                        var loginP = this.loginForm1.GetLoginPaket();
+                        var loginP = this.registerForm1.GetLoginPaket();
+                        this.loginForm1.setLoginData( loginP );
+                        AimHelper( DialogPage.LOGIN_FORM, DialogPage.REGISTER_FORM );
                         this._controller.PaketQueue.Enqueue( loginP );
                         break;
                     }
                     case Data.ActionEnum.SUCCEED_LOGIN:
+                        this._controller.MYTOKEN = obj.Token;
                         AimHelper( DialogPage.CHAT_VIEW, DialogPage.LOGIN_FORM );
+                        break;
+
+                    case Data.ActionEnum.SUCCEED_MESSAGE_SEND:
+                    case Data.ActionEnum.SUCCEED_GET_LAST_MESSAGES:
+                    case Data.ActionEnum.SUCCEED_GET_LAST_CHATS:
+                    case Data.ActionEnum.SUCCEED_GET_CHAT_INFO:
+                    case Data.ActionEnum.SUCCEED_CREATE_CHAT:
+                    case Data.ActionEnum.SUCCEED_ADD_TO_CHAT:
+                        this.chatView1.ChatUiUpdate( obj );
                         break;
                     default: break;
                 }
@@ -108,7 +127,7 @@ namespace ChatClient {
         private double starte = 1;
 
         private void AnimationTimer_Tick(object sender, EventArgs e) {
-            this.starte  +=  this.animationTimer.Interval*this.starte;
+            this.starte += this.animationTimer.Interval * this.starte;
 
             var std = (int) this.starte;
 
@@ -150,7 +169,8 @@ namespace ChatClient {
                 }
                 else {
                     this.chatView1.Dock = DockStyle.Fill;
-                }   
+                }
+
                 Application.DoEvents();
             }
         }
