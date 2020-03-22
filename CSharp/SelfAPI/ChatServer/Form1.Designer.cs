@@ -45,17 +45,17 @@
             this.chatsBindingNavigatorSaveItem = new System.Windows.Forms.ToolStripButton();
             this.chatsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.databaseDataSet = new ChatServer.DatabaseDataSet();
-            this.chatsTableAdapter = new ChatServer.DatabaseDataSetTableAdapters.ChatsTableAdapter();
-            this.tableAdapterManager = new ChatServer.DatabaseDataSetTableAdapters.TableAdapterManager();
+            this.chatsTableAdapter = new ChatsTableAdapter();
+            this.tableAdapterManager = new TableAdapterManager();
             this.usersBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.usersTableAdapter = new ChatServer.DatabaseDataSetTableAdapters.UsersTableAdapter();
+            this.usersTableAdapter = new UsersTableAdapter();
             this.usersDataGridView = new System.Windows.Forms.DataGridView();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.messagesBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.messagesTableAdapter = new ChatServer.DatabaseDataSetTableAdapters.MessagesTableAdapter();
+            this.messagesTableAdapter = new MessagesTableAdapter();
             this.messagesDataGridView = new System.Windows.Forms.DataGridView();
             this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -221,7 +221,7 @@
             this.tableAdapterManager.BackupDataSetBeforeUpdate = false;
             this.tableAdapterManager.ChatsTableAdapter = this.chatsTableAdapter;
             this.tableAdapterManager.MessagesTableAdapter = null;
-            this.tableAdapterManager.UpdateOrder = ChatServer.DatabaseDataSetTableAdapters.TableAdapterManager.UpdateOrderOption.InsertUpdateDelete;
+            this.tableAdapterManager.UpdateOrder = TableAdapterManager.UpdateOrderOption.InsertUpdateDelete;
             this.tableAdapterManager.UsersTableAdapter = null;
             // 
             // usersBindingSource
@@ -401,8 +401,8 @@
 
         private DatabaseDataSet databaseDataSet;
         private System.Windows.Forms.BindingSource chatsBindingSource;
-        private DatabaseDataSetTableAdapters.ChatsTableAdapter chatsTableAdapter;
-        private DatabaseDataSetTableAdapters.TableAdapterManager tableAdapterManager;
+        private ChatsTableAdapter chatsTableAdapter;
+        private TableAdapterManager tableAdapterManager;
         private System.Windows.Forms.BindingNavigator chatsBindingNavigator;
         private System.Windows.Forms.ToolStripButton bindingNavigatorAddNewItem;
         private System.Windows.Forms.ToolStripLabel bindingNavigatorCountItem;
@@ -417,14 +417,14 @@
         private System.Windows.Forms.ToolStripSeparator bindingNavigatorSeparator2;
         private System.Windows.Forms.ToolStripButton chatsBindingNavigatorSaveItem;
         private System.Windows.Forms.BindingSource usersBindingSource;
-        private DatabaseDataSetTableAdapters.UsersTableAdapter usersTableAdapter;
+        private UsersTableAdapter usersTableAdapter;
         private System.Windows.Forms.DataGridView usersDataGridView;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
         private System.Windows.Forms.BindingSource messagesBindingSource;
-        private DatabaseDataSetTableAdapters.MessagesTableAdapter messagesTableAdapter;
+        private MessagesTableAdapter messagesTableAdapter;
         private System.Windows.Forms.DataGridView messagesDataGridView;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
