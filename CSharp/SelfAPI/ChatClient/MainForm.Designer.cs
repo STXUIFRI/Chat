@@ -28,10 +28,30 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            this.animationTimer = new System.Windows.Forms.Timer(this.components);
+            this.registerForm1 = new ChatClient.RegisterForm();
             this.connectionForm1 = new ChatClient.ConnectionForm();
             this.loginForm1 = new ChatClient.LoginForm();
             this.chatView1 = new ChatClient.ChatView();
             this.SuspendLayout();
+            // 
+            // animationTimer
+            // 
+            this.animationTimer.Interval = 1;
+            this.animationTimer.Tick += new System.EventHandler(this.AnimationTimer_Tick);
+            // 
+            // registerForm1
+            // 
+            this.registerForm1.BackColor = System.Drawing.Color.DarkSlateBlue;
+            this.registerForm1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.registerForm1.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.registerForm1.ForeColor = System.Drawing.Color.OrangeRed;
+            this.registerForm1.Location = new System.Drawing.Point(0, 0);
+            this.registerForm1.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
+            this.registerForm1.Name = "registerForm1";
+            this.registerForm1.Size = new System.Drawing.Size(400, 499);
+            this.registerForm1.TabIndex = 3;
             // 
             // connectionForm1
             // 
@@ -74,6 +94,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.SteelBlue;
             this.ClientSize = new System.Drawing.Size(400, 499);
+            this.Controls.Add(this.registerForm1);
             this.Controls.Add(this.connectionForm1);
             this.Controls.Add(this.loginForm1);
             this.Controls.Add(this.chatView1);
@@ -89,6 +110,8 @@
         private LoginForm loginForm1;
         private ConnectionForm connectionForm1;
         private ChatView chatView1;
+        private RegisterForm registerForm1;
+        private System.Windows.Forms.Timer animationTimer;
     }
 }
 

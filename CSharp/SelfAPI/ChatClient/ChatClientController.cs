@@ -2,102 +2,153 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Data;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using Newtonsoft.Json;
-using SelfAPI;
+using System.Threading.Tasks;
+using ChatLib;
 
 #endregion
 
 namespace ChatClient {
-    internal class ChatClientController {
+    public class ChatClientController {
+        private readonly List<Thread> _threads   = new List<Thread>();
+        public readonly  Queue<Data>  PaketQueue = new Queue<Data>();
 
-        private const int CHECK_INTERVAL      = 5;
-        public const  int SLEEP_BETWEEN_SENDS = 100;
-        private const int BUFFER_SIZE         = 1024 * 4;
+        private bool _running;
 
-        public Queue<Data> PaketQueue = new Queue<Data>();
-
-        public void StartClient(IPEndPoint ipE) {
-            TcpClient cl;
-
-            while ( true ) {
-                cl = new TcpClient();
-
-                while ( !cl.Connected )
-                    try {
-                        Console.WriteLine( "connecting..." );
-                        cl.Connect( ipE );
-                    } catch (Exception e) {
-                        Console.WriteLine( e.Message );
+        public bool Running {
+            get => this._running;
+            set {
+                if ( !value ) {
+                    while ( this._threads.Count > 0 ) {
+                        this._threads[0]?.Abort();
+                        this._threads.RemoveAt( 0 );
                     }
 
-                Console.WriteLine( "connected: " + ipE );
+                    this._threads.Clear();
+                }
+
+                this._running = value;
+            }
+        }
+
+        private async Task RunClientDaemon(IPEndPoint ipE, Action<ConnectionState> callback) {
+            TcpClient cl;
+            this.Running = true;
+
+            while ( this.Running ) {
+                cl = new TcpClient();
+                callback?.Invoke( ConnectionState.Connecting );
 
                 try {
-                    var re = new Thread( () => {
+                    var re = new Thread( async () => {
                         try {
-                            ReceivedPaketThread( ref cl );
+                            while ( !cl.Connected ) Thread.Sleep( StaticTcpClientOpperations.CHECK_INTERVAL );
+                            await ReceivedPaketThread( cl, callback );
                         } catch (Exception ex) {
                             Console.WriteLine( ex.Message );
                         }
                     } );
 
-                    var se = new Thread( () => {
+                    var se = new Thread( async () => {
                         try {
-                            SendPaketThread( ref cl );
+                            while ( !cl.Connected ) Thread.Sleep( StaticTcpClientOpperations.CHECK_INTERVAL );
+                            await SendPaketThread( cl, callback );
                         } catch (Exception ex) {
                             Console.WriteLine( ex.Message );
                         }
                     } );
-
+                    this._threads.Add( re );
+                    this._threads.Add( se );
                     re.Start();
                     se.Start();
                 } catch (Exception e) {
                     Console.WriteLine( e.Message );
                 }
 
+                while ( !cl.Connected ) {
+                    try {
+                        await cl.ConnectAsync( ipE.Address, ipE.Port );
+                    } catch (Exception e) {
+                        Console.WriteLine( e.Message );
+                    }
+
+                    callback?.Invoke( ConnectionState.Broken );
+                }
+
+                callback?.Invoke( ConnectionState.Open );
+
+                while ( cl.Connected ) Thread.Sleep( StaticTcpClientOpperations.RECONNECT_INTERVAL );
+                callback?.Invoke( ConnectionState.Closed );
+
+                this.Running = false;
                 cl.Close();
-                //while ( cl.Connected ) {
-                //    Thread.Sleep( 100 );
-                //}
-                //
-                //cl.Close();
                 cl.Dispose();
+                this.Running = true;
             }
         }
 
+        public void StartClient(IPEndPoint ipE, Action<ConnectionState> callback) {
+            if ( this.Running ) return;
 
-        private void SendPaketThread(ref TcpClient cl) {
+            var t = new Thread( async () => { await RunClientDaemon( ipE, callback ); } );
+            t.Start();
+            t.Join( 200 );
+            this._threads.Add( t );
+        }
+
+        private async Task SendPaketThread(TcpClient cl, Action<ConnectionState> callback) {
             while ( cl.Connected ) {
-                while ( this.PaketQueue.Count <= 0 ) Thread.Sleep( CHECK_INTERVAL * 2 );
+                Data[] packets = default;
 
-                Thread.Sleep( SLEEP_BETWEEN_SENDS );
-                var packets = this.PaketQueue.ToArray();
+                try {
+                    while ( this.PaketQueue.Count <= 0 ) Thread.Sleep( StaticTcpClientOpperations.CHECK_INTERVAL * 2 );
 
-                SendDataList( packets, ref cl );
+                    Thread.Sleep( StaticTcpClientOpperations.SLEEP_BETWEEN_SENDS );
+                    packets = this.PaketQueue.ToArray();
+                    this.PaketQueue.Clear();
+
+                    await StaticTcpClientOpperations.SendDataList( packets, cl );
+                } catch (Exception ex) {
+                    Console.WriteLine( ex.Message );
+                }
+
+                if ( packets == null ) continue;
+
+                callback?.Invoke( ConnectionState.Executing );
+
                 Console.WriteLine( "Send: " + packets.Length + " " + nameof(packets) );
             }
         }
 
-        private void ReceivedPaketThread(ref TcpClient cl) {
+        private async Task ReceivedPaketThread(TcpClient cl, Action<ConnectionState> callback) {
             while ( cl.Connected ) {
-                SleepForClData( ref cl );
+                List<Data> dataPackets = default;
 
-                var bytes       = RecBytes( ref cl );
-                var dataPackets = ProcessReceived( Encoding.UTF8.GetString( bytes ), ref cl );
+                try {
+                    StaticTcpClientOpperations.SleepForClData( ref cl );
 
-                ProcessReceivedPacketes( dataPackets );
+                    var bytes = await StaticTcpClientOpperations.RecBytes( cl );
+                    dataPackets = StaticTcpClientOpperations.ProcessReceived( Encoding.UTF8.GetString( bytes ) );
+
+                    ProcessReceivedPacketes( dataPackets );
+                } catch (Exception ex) {
+                    Console.WriteLine( ex.Message );
+                }
+
+                if ( dataPackets == null ) continue;
+
+                callback?.Invoke( ConnectionState.Fetching );
 
                 Console.WriteLine( "Received: " + dataPackets.Count + " " + nameof(dataPackets) );
             }
         }
 
         private void ProcessReceivedPacketes(List<Data> dataPackets) {
-            foreach ( var dataPacket in dataPackets ) {
+            foreach ( var dataPacket in dataPackets )
                 switch (dataPacket.Action) {
                     case Data.ActionEnum.REGISTER:
                     case Data.ActionEnum.LOGIN:
@@ -112,6 +163,8 @@ namespace ChatClient {
                     case Data.ActionEnum.SUCCEED:
                         Console.WriteLine( "succeed" );
                         break;
+
+                    case Data.ActionEnum.CONNECTED:
                     case Data.ActionEnum.SUCCEED_LOGIN:
                     case Data.ActionEnum.SUCCEED_REGISTER:
                     case Data.ActionEnum.SUCCEED_MESSAGE_SEND:
@@ -125,68 +178,10 @@ namespace ChatClient {
                         break;
                     default: throw new ArgumentOutOfRangeException();
                 }
-            }
         }
 
         public event Action<Data> ToUI;
 
         protected virtual void OnToUi(Data obj) { this.ToUI?.Invoke( obj ); }
-
-
-        #region ControalMethods
-
-        public static void SleepForClData(ref TcpClient cl) {
-            while ( cl.Available < 0 ) Thread.Sleep( CHECK_INTERVAL );
-        }
-
-        public static void SendDataList(Data data, ref TcpClient cl) { SendDataList( new[] { data }, ref cl ); }
-
-        public static void SendDataList(IEnumerable<Data> dataObjects, ref TcpClient cl) {
-            foreach ( var dataO in dataObjects ) {
-                cl.Client.Send( Encoding.UTF8.GetBytes( JsonConvert.SerializeObject( dataO ) ) );
-                Thread.Sleep( SLEEP_BETWEEN_SENDS );
-            }
-        }
-
-        private static List<Data> ProcessReceived(string data, ref TcpClient cl) {
-            var dataObs = new List<Data>();
-
-            while ( true ) {
-                try {
-                    dataObs.Add( JsonConvert.DeserializeObject<Data>( data ) );
-                } catch (JsonReaderException e) {
-                    dataObs.Add( JsonConvert.DeserializeObject<Data>( data.Substring( 0, e.LinePosition ) ) );
-                    data = data.Substring( e.LinePosition );
-                    continue;
-                }
-
-                break;
-            }
-
-            return dataObs;
-        }
-
-        public static byte[] RecBytes(ref TcpClient cl) {
-            SleepForClData( ref cl );
-
-            var memoryStream = new MemoryStream();
-
-            var buffer    = new byte[BUFFER_SIZE];
-            int readBytes = cl.Client.Receive( buffer );
-
-            while ( readBytes > 0 ) {
-                memoryStream.Write( buffer, 0, readBytes );
-
-                if ( cl.Available > 0 ) readBytes = cl.Client.Receive( buffer );
-                else break;
-            }
-
-            var totalBytes = memoryStream.ToArray();
-            memoryStream.Close();
-            return totalBytes;
-        }
-
-        #endregion
-
     }
 }

@@ -76,7 +76,7 @@
             this.textBox2.ForeColor = System.Drawing.Color.OrangeRed;
             this.textBox2.Location = new System.Drawing.Point(0, 0);
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(598, 35);
+            this.textBox2.Size = new System.Drawing.Size(607, 35);
             this.textBox2.TabIndex = 3;
             // 
             // label3
@@ -124,7 +124,7 @@
             listViewItem1});
             this.MessageView.Location = new System.Drawing.Point(0, 0);
             this.MessageView.Name = "MessageView";
-            this.MessageView.Size = new System.Drawing.Size(714, 618);
+            this.MessageView.Size = new System.Drawing.Size(723, 605);
             this.MessageView.TabIndex = 8;
             this.MessageView.UseCompatibleStateImageBehavior = false;
             this.MessageView.View = System.Windows.Forms.View.List;
@@ -147,7 +147,7 @@
             listViewItem2});
             this.ChatsView.Location = new System.Drawing.Point(0, 0);
             this.ChatsView.Name = "ChatsView";
-            this.ChatsView.Size = new System.Drawing.Size(171, 618);
+            this.ChatsView.Size = new System.Drawing.Size(173, 605);
             this.ChatsView.TabIndex = 8;
             this.ChatsView.UseCompatibleStateImageBehavior = false;
             this.ChatsView.View = System.Windows.Forms.View.List;
@@ -168,7 +168,7 @@
             this.panel4.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel4.Location = new System.Drawing.Point(0, 0);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(889, 73);
+            this.panel4.Size = new System.Drawing.Size(900, 73);
             this.panel4.TabIndex = 8;
             // 
             // textBox1
@@ -196,8 +196,8 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.panel2);
             this.splitContainer1.Panel2.Controls.Add(this.MessageView);
-            this.splitContainer1.Size = new System.Drawing.Size(889, 618);
-            this.splitContainer1.SplitterDistance = 171;
+            this.splitContainer1.Size = new System.Drawing.Size(900, 605);
+            this.splitContainer1.SplitterDistance = 173;
             this.splitContainer1.TabIndex = 11;
             // 
             // panel2
@@ -205,9 +205,9 @@
             this.panel2.Controls.Add(this.textBox2);
             this.panel2.Controls.Add(this.button2);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel2.Location = new System.Drawing.Point(0, 583);
+            this.panel2.Location = new System.Drawing.Point(0, 570);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(714, 35);
+            this.panel2.Size = new System.Drawing.Size(723, 35);
             this.panel2.TabIndex = 9;
             // 
             // button2
@@ -216,7 +216,7 @@
             this.button2.Dock = System.Windows.Forms.DockStyle.Right;
             this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button2.Location = new System.Drawing.Point(598, 0);
+            this.button2.Location = new System.Drawing.Point(607, 0);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(116, 35);
             this.button2.TabIndex = 10;
@@ -226,9 +226,9 @@
             // panel1
             // 
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 691);
+            this.panel1.Location = new System.Drawing.Point(0, 678);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(889, 22);
+            this.panel1.Size = new System.Drawing.Size(900, 22);
             this.panel1.TabIndex = 9;
             // 
             // ChatView
@@ -243,7 +243,7 @@
             this.ForeColor = System.Drawing.Color.OrangeRed;
             this.Margin = new System.Windows.Forms.Padding(8, 7, 8, 7);
             this.Name = "ChatView";
-            this.Size = new System.Drawing.Size(889, 713);
+            this.Size = new System.Drawing.Size(900, 700);
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
