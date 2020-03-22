@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Newtonsoft.Json;
 
-namespace SelfAPI {
+namespace ChatLib {
     public class Data {
         [JsonProperty( "Action" )]
         [field: JsonIgnore]
@@ -20,6 +15,12 @@ namespace SelfAPI {
         [field: JsonIgnore]
         public string Token { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
+
+        public Data(ActionEnum action, object dataObj, string token) {
+            this.Action = action;
+            this.DataObj = dataObj;
+            this.Token = token;
+        }
         public enum ActionEnum {
             CONNECTED      = -10,
             REGISTER       = 10, LOGIN             = 11,
