@@ -17,12 +17,13 @@ namespace ChatLib {
 
 
         public Data(ActionEnum action, object dataObj, string token) {
-            this.Action = action;
+            this.Action  = action;
             this.DataObj = dataObj;
-            this.Token = token;
+            this.Token   = token;
         }
+
         public enum ActionEnum {
-            CONNECTED      = -10,
+            CONNECTED      = 1,
             REGISTER       = 10, LOGIN             = 11,
             SEND_MESSAGE   = 20, GET_LAST_MESSAGES = 21,
             GET_LAST_CHATS = 30, GET_CHAT_INFO     = 31, CREATE_CHAT = 32, ADD_TO_CHAT = 33,

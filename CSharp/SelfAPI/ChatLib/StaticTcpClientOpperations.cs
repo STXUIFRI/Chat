@@ -29,7 +29,9 @@ namespace ChatLib {
 
         public static async Task SendDataList(IEnumerable<Data> dataObjects, TcpClient cl) {
             foreach ( var dataO in dataObjects ) {
-                await cl.Client.SendAsync( new ArraySegment<byte>( Encoding.UTF8.GetBytes( JsonConvert.SerializeObject( dataO ) ) ), SocketFlags.None );
+                string serialized = JsonConvert.SerializeObject( dataO );
+                Console.WriteLine( serialized );
+                await cl.Client.SendAsync( new ArraySegment<byte>( Encoding.UTF8.GetBytes( serialized ) ), SocketFlags.None );
                 Thread.Sleep( SLEEP_BETWEEN_SENDS );
             }
         }

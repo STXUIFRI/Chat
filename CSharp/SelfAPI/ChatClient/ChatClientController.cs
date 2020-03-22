@@ -35,7 +35,7 @@ namespace ChatClient {
             }
         }
 
-        private async Task RunClientDaemon(IPEndPoint ipE, Action<ConnectionState> callback) {
+        private async void RunClientDaemon(IPEndPoint ipE, Action<ConnectionState> callback) {
             TcpClient cl;
             this.Running = true;
 
@@ -51,7 +51,7 @@ namespace ChatClient {
                         } catch (Exception ex) {
                             Console.WriteLine( ex.Message );
                         }
-                    } );
+                    } ) { Name = "ReceivePacket Thread" };
 
                     var se = new Thread( async () => {
                         try {
@@ -60,7 +60,7 @@ namespace ChatClient {
                         } catch (Exception ex) {
                             Console.WriteLine( ex.Message );
                         }
-                    } );
+                    } ) { Name = "SendPacket Thread" };
                     this._threads.Add( re );
                     this._threads.Add( se );
                     re.Start();
@@ -94,9 +94,10 @@ namespace ChatClient {
         public void StartClient(IPEndPoint ipE, Action<ConnectionState> callback) {
             if ( this.Running ) return;
 
-            var t = new Thread( async () => { await RunClientDaemon( ipE, callback ); } );
+            var t = new Thread( () => {
+                RunClientDaemon( ipE, callback );
+            } ) { Name = "Network Client Thread" };
             t.Start();
-            t.Join( 200 );
             this._threads.Add( t );
         }
 

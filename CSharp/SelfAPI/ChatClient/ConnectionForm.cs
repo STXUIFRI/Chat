@@ -1,4 +1,4 @@
-﻿#define LOCAL_TEST
+﻿//#define LOCAL_TEST
 
 using System;
 using System.Collections.Generic;
@@ -19,7 +19,7 @@ namespace ChatClient {
         public void SetController(ChatClientController comptroller) { this._comptroller = comptroller; }
 
         private void Connect_Click(object sender, EventArgs e) {
-            this.Connect.Text  =  "   Abort  ";
+            this.Connect.Text  =  " Abort ";
             this.Connect.Click -= Connect_Click;
             this.Connect.Click += Abort_Click;
 
@@ -34,7 +34,7 @@ namespace ChatClient {
         }
 
         private void Abort_Click(object sender, EventArgs e) {
-            this.Connect.Text         =  " Connect ";
+            this.Connect.Text         =  "Connect";
             this.Connect.Click        += Connect_Click;
             this.Connect.Click        -= Abort_Click;
             this._comptroller.Running =  false;
