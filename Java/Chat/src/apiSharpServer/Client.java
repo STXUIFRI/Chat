@@ -45,7 +45,7 @@ public class Client {
     public void listener() throws IOException, InterruptedException {
         if (in.available() != 0) {
             try {
-                System.out.printf("Listener started for %s%n", tokenName);
+                //System.out.printf("Listener started for %s%n", tokenName);
 
                 StringBuilder stringIn = new StringBuilder();
                 Data receive = new Data();
@@ -57,6 +57,8 @@ public class Client {
                     stringIn.append(c);
 
                 }
+
+
                 System.out.println(stringIn);
                 receive.readFromJson(new JSONObject(stringIn.toString()));
 
@@ -78,8 +80,6 @@ public class Client {
             } else if (action == ActionEnum.SEND_MESSAGE.getI()) {
                 addMessage(out, receive);
             }
-
-            Thread.sleep(10);
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -88,7 +88,7 @@ public class Client {
 
     private void addMessage(DataOutputStream out, Data receive) throws IOException {
         Message m = receive.getMessages()[0];
-        connectionDB.addMessage(m.getText(), m.getChat(), m.getSender(), m.getFlags());
+        connectionDB.addMessage(m.getText(), m.getChat(), ID, m.getFlags());
         out.write(new Data(ActionEnum.SUCCEED_MESSAGE_SEND.getI()).packToJson().toString().getBytes());
     }
 
@@ -110,7 +110,7 @@ public class Client {
 
     private void createChat(DataOutputStream out, Data receive) throws IOException {
         Chat c = receive.getChats()[0];
-        connectionDB.createChat(c.getCreatorID(), c.getTitle(), c.getFlags());
+        connectionDB.createChat(ID, c.getTitle(), c.getFlags());
         out.write(new Data(ActionEnum.SUCCEED_CREATE_CHAT.getI()).packToJson().toString().getBytes());
     }
 
@@ -151,6 +151,46 @@ public class Client {
     private void openStreams() throws IOException {
         in = new DataInputStream(connect.getInputStream());
         out = new DataOutputStream(connect.getOutputStream());
+    }
+
+    public Socket getConnect() {
+        return connect;
+    }
+
+    public void setConnect(Socket connect) {
+        this.connect = connect;
+    }
+
+    public Connection getConnectionDB() {
+        return connectionDB;
+    }
+
+    public void setConnectionDB(Connection connectionDB) {
+        this.connectionDB = connectionDB;
+    }
+
+    public Security getSecurity() {
+        return security;
+    }
+
+    public void setSecurity(Security security) {
+        this.security = security;
+    }
+
+    public DataInputStream getIn() {
+        return in;
+    }
+
+    public void setIn(DataInputStream in) {
+        this.in = in;
+    }
+
+    public DataOutputStream getOut() {
+        return out;
+    }
+
+    public void setOut(DataOutputStream out) {
+        this.out = out;
     }
 
     public int getID() {

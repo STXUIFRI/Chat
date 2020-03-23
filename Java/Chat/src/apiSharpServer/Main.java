@@ -10,10 +10,9 @@ import java.util.*;
 public class Main {
 
     private Map<String, Client> clients = new HashMap<>();
+    private List<Client>clientsBuffer = new ArrayList<>();
     private Connection connectionDB = new Connection();
     private Security security = new Security();
-
-
 
 
     public Main() {
@@ -23,10 +22,10 @@ public class Main {
     private void startServer() {
         try {
             ServerSocket server = new ServerSocket(6969);
+            startThread();
             while (true) {
                 System.out.println("Waiting for Client...");
                 // wait.start();
-                startThread();
                 Socket client = server.accept();
                 //wait.stop();
                 System.out.printf("%nClient Connected: %s%n", client.getLocalAddress());
@@ -41,30 +40,41 @@ public class Main {
 
     private void newClient(Socket client) {
         String id = genID();
-        Client c = new Client(client,connectionDB,security);
+        Client c = new Client(client, connectionDB, security);
         c.setTokenName(id);
-        clients.put(id,c);
+        clientsBuffer.add(c);
     }
 
-    private String genID(){
+    private String genID() {
         Random r = new Random();
         StringBuilder salt = new StringBuilder();
         for (int i = 0; i < 8; i++) {
-            salt.append((char)(r.nextInt(87)+36));
+            salt.append((char) (r.nextInt(87) + 36));
         }
         return salt.toString();
     }
 
-    private void startThread(){
-        new Thread(()->{
+    private void startThread() {
+        new Thread(() -> {
             while (true) {
+                for (int i = 0; i < clientsBuffer.size(); i++) {
+                    Client c = clientsBuffer.get(i);
+                    clients.put(c.getTokenName(),c);
+
+                }
+                clientsBuffer = new ArrayList<>();
                 for (Map.Entry<String, Client> client : clients.entrySet()) {
                     try {
                         client.getValue().listener();
-                        //System.out.printf("Listener called: %s.%n",client.getValue().getTokenName());
+                        //System.out.println(client.getValue().getConnect().getInputStream().read()+ "   " +clients.size() );
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                }
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         }).start();
