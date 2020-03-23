@@ -6,19 +6,19 @@ using Newtonsoft.Json;
 
 namespace ChatLib {
     public class LoginData {
-        [JsonProperty( "UserName" )]
+        [JsonProperty( "name" )]
         [field: JsonIgnore]
-        public string UserName { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
+        public string Name { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
-        [JsonProperty( "Password" )]
+        [JsonProperty( "password" )]
         [field: JsonIgnore]
         public string Password { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
-        [JsonProperty( "Age" )]
+        [JsonProperty( "age" )]
         [field: JsonIgnore]
         public int Age { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
-        [JsonProperty( "Gender" )]
+        [JsonProperty( "male" )]
         [field: JsonIgnore]
         public GenderTypes Gender { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
@@ -34,13 +34,13 @@ namespace ChatLib {
             return new LoginData( userName, password );
         }
 
-        private LoginData(string userName, string password, int age, GenderTypes gender) : this(userName, password){
+        private LoginData(string name, string password, int age, GenderTypes gender) : this(name, password){
             this.Age = age;
             this.Gender = gender;
         }
 
-        private LoginData(string userName, string password) {
-            this.UserName = userName;
+        private LoginData(string name, string password) {
+            this.Name = name;
             this.Password = password;
         }
     }

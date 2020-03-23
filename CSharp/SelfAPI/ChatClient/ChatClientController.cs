@@ -14,6 +14,12 @@ using ChatLib;
 
 namespace ChatClient {
     public class ChatClientController {
+        private string _myToken;
+        public string MYTOKEN {
+            get => this._myToken;
+            set => this._myToken = value;
+        }
+
         private readonly List<Thread> _threads   = new List<Thread>();
         public readonly  Queue<Data>  PaketQueue = new Queue<Data>();
 
@@ -35,7 +41,7 @@ namespace ChatClient {
             }
         }
 
-        private async Task RunClientDaemon(IPEndPoint ipE, Action<ConnectionState> callback) {
+        private async void RunClientDaemon(IPEndPoint ipE, Action<ConnectionState> callback) {
             TcpClient cl;
             this.Running = true;
 
@@ -51,7 +57,7 @@ namespace ChatClient {
                         } catch (Exception ex) {
                             Console.WriteLine( ex.Message );
                         }
-                    } );
+                    } ) { Name = "ReceivePacket Thread" };
 
                     var se = new Thread( async () => {
                         try {
@@ -60,7 +66,7 @@ namespace ChatClient {
                         } catch (Exception ex) {
                             Console.WriteLine( ex.Message );
                         }
-                    } );
+                    } ) { Name = "SendPacket Thread" };
                     this._threads.Add( re );
                     this._threads.Add( se );
                     re.Start();
@@ -94,9 +100,10 @@ namespace ChatClient {
         public void StartClient(IPEndPoint ipE, Action<ConnectionState> callback) {
             if ( this.Running ) return;
 
-            var t = new Thread( async () => { await RunClientDaemon( ipE, callback ); } );
+            if ( string.IsNullOrEmpty( this.MYTOKEN ) ) this.MYTOKEN = "-";
+
+            var t = new Thread( () => { RunClientDaemon( ipE, callback ); } ) { Name = "Network Client Thread" };
             t.Start();
-            t.Join( 200 );
             this._threads.Add( t );
         }
 
@@ -110,6 +117,10 @@ namespace ChatClient {
                     Thread.Sleep( StaticTcpClientOpperations.SLEEP_BETWEEN_SENDS );
                     packets = this.PaketQueue.ToArray();
                     this.PaketQueue.Clear();
+
+                    foreach ( var packet in packets ) {
+                        packet.Token = this.MYTOKEN;
+                    }
 
                     await StaticTcpClientOpperations.SendDataList( packets, cl );
                 } catch (Exception ex) {
@@ -132,7 +143,8 @@ namespace ChatClient {
                     StaticTcpClientOpperations.SleepForClData( ref cl );
 
                     var bytes = await StaticTcpClientOpperations.RecBytes( cl );
-                    dataPackets = StaticTcpClientOpperations.ProcessReceived( Encoding.UTF8.GetString( bytes ) );
+                    var stringData = Encoding.UTF8.GetString( bytes );
+                    dataPackets = StaticTcpClientOpperations.ProcessReceived( stringData );
 
                     ProcessReceivedPacketes( dataPackets );
                 } catch (Exception ex) {
@@ -176,6 +188,18 @@ namespace ChatClient {
                         OnToUi( dataPacket );
 
                         break;
+                    case Data.ActionEnum.ERROR:
+                    case Data.ActionEnum.ERROR_LOGIN:
+                    case Data.ActionEnum.ERROR_REGISTER:
+                    case Data.ActionEnum.ERROR_MESSAGE_SEND:
+                    case Data.ActionEnum.ERROR_GET_LAST_MESSAGES:
+                    case Data.ActionEnum.ERROR_GET_LAST_CHATS:
+                    case Data.ActionEnum.ERROR_GET_CHAT_INFO:
+                    case Data.ActionEnum.ERROR_CREATE_CHAT:
+                    case Data.ActionEnum.ERROR_ADD_TO_CHAT:
+                        OnToUiOnError( dataPacket );
+
+                        break;
                     default: throw new ArgumentOutOfRangeException();
                 }
         }
@@ -183,5 +207,9 @@ namespace ChatClient {
         public event Action<Data> ToUI;
 
         protected virtual void OnToUi(Data obj) { this.ToUI?.Invoke( obj ); }
+
+
+        public event Action<Data> ToUIOnError;
+        protected virtual void    OnToUiOnError(Data obj) { this.ToUIOnError?.Invoke( obj ); }
     }
 }

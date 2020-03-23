@@ -29,7 +29,7 @@ namespace ChatServer {
             }
         }
 
-        static readonly Data welcomePaket = new Data( Data.ActionEnum.CONNECTED, "", "" );
+        static readonly Data welcomePaket = new Data( Data.ActionEnum.CONNECTED);
 
         static public Queue<Data> PacketQueue = new Queue<Data>();
 
@@ -48,29 +48,27 @@ namespace ChatServer {
                     switch (data.Action) {
                         case Data.ActionEnum.CONNECTED: break;
                         case Data.ActionEnum.REGISTER:
-                            reData = new Data( Data.ActionEnum.SUCCEED_REGISTER, "", "token hear" );
+                            reData = new Data( Data.ActionEnum.SUCCEED_REGISTER );
                             break;
                         case Data.ActionEnum.LOGIN:
-                            reData = new Data( Data.ActionEnum.SUCCEED_LOGIN, "", "token hear" );
+                            reData = new Data( Data.ActionEnum.SUCCEED_LOGIN);
                             break;
                         case Data.ActionEnum.SEND_MESSAGE:
 
-                            reData = new Data( Data.ActionEnum.SUCCEED_MESSAGE_SEND, "", "token hear" );
+                            reData = new Data( Data.ActionEnum.SUCCEED_MESSAGE_SEND );
                             break;
                         case Data.ActionEnum.GET_LAST_MESSAGES:
-                            reData = new Data( Data.ActionEnum.SUCCEED_GET_LAST_MESSAGES, new Message[] { new Message( 0, "Test0001", 1, DateTime.Now, 1 ), new Message( 0, "Test0002", 2, DateTime.Today, 2 ) }, "token hear" );
                             break;
                         case Data.ActionEnum.GET_LAST_CHATS:
-                            reData = new Data( Data.ActionEnum.SUCCEED_GET_LAST_CHATS, new[] { new ChatInfo( 1, 2, 0 ), new ChatInfo( 2, 2, 0 ), new ChatInfo( 3, 1, 0 ) }, "token hear" );
                             break;
                         case Data.ActionEnum.GET_CHAT_INFO:
-                            reData = new Data( Data.ActionEnum.SUCCEED_GET_CHAT_INFO, "", "token hear" );
+                            reData = new Data( Data.ActionEnum.SUCCEED_GET_CHAT_INFO);
                             break;
                         case Data.ActionEnum.CREATE_CHAT:
-                            reData = new Data( Data.ActionEnum.SUCCEED_CREATE_CHAT, "", "token hear" );
+                            reData = new Data( Data.ActionEnum.SUCCEED_CREATE_CHAT );
                             break;
                         case Data.ActionEnum.ADD_TO_CHAT:
-                            reData = new Data( Data.ActionEnum.SUCCEED_ADD_TO_CHAT, "", "token hear" );
+                            reData = new Data( Data.ActionEnum.SUCCEED_ADD_TO_CHAT );
                             break;
 
                         case Data.ActionEnum.SUCCEED:
