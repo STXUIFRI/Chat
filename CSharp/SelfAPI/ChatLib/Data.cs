@@ -27,33 +27,26 @@ namespace ChatLib {
 
         public Data() { }
 
-        public Data(ActionEnum action, string token) {
+        [DebuggerStepThrough]
+        public Data(ActionEnum action, string token = "-") {
             this.Action = action;
             this.Token  = token;
         }
 
-        public Data(ActionEnum action, LoginData login, string token) {
-            this.Action = action;
-            this.Login  = login;
-            this.Token  = token;
-        }
+        [DebuggerStepThrough]
+        public Data(ActionEnum action, ChatInfo[] chats = default, Message[] messages = default, LoginData login = default, string token = "-") : this( action, login, messages, chats, token ) { }
 
-        public Data(ActionEnum action, Message[] messages, string token) {
-            this.Action  = action;
+
+        [DebuggerStepThrough]
+        public Data(ActionEnum action, Message[] messages = default, LoginData login = default, ChatInfo[] chats = default, string token = "-") : this( action, login, messages, chats, token ) { }
+
+        [DebuggerStepThrough]
+        public Data(ActionEnum action, LoginData login = default, Message[] messages = default, ChatInfo[] chats = default, string token = "-") {
+            this.Action   = action;
+            this.Login    = login;
             this.Messages = messages;
-            this.Token   = token;
-        }
-
-        public Data(ActionEnum action, ChatInfo[] chats, string token) {
-            this.Action = action;
-            this.Chats = chats;
-            this.Token = token;
-        }
-
-        [Obsolete]
-        public Data(ActionEnum action, object o, string token) {
-            this.Action = action;
-            this.Token  = token;
+            this.Chats    = chats;
+            this.Token    = token;
         }
 
         public Data(ActionEnum action) { this.Action = action; }
@@ -70,18 +63,27 @@ namespace ChatLib {
             SUCCEED_MESSAGE_SEND   = 120, SUCCEED_GET_LAST_MESSAGES = 121,
             SUCCEED_GET_LAST_CHATS = 130, SUCCEED_GET_CHAT_INFO     = 131, SUCCEED_CREATE_CHAT = 132, SUCCEED_ADD_TO_CHAT = 133,
 
-            ERROR                  = 200,
-            ERROR_LOGIN            = 210, ERROR_REGISTER          = 211,
-            ERROR_MESSAGE_SEND     = 220, ERROR_GET_LAST_MESSAGES = 221,
-            ERROR_GET_LAST_CHATS   = 230, ERROR_GET_CHAT_INFO     = 231, ERROR_CREATE_CHAT = 232, ERROR_ADD_TO_CHAT = 233,
+            ERROR                = 200, ERROR_SQL_INJECTION_DETECTED = 201,
+            ERROR_LOGIN          = 210, ERROR_REGISTER               = 211,
+            ERROR_MESSAGE_SEND   = 220, ERROR_GET_LAST_MESSAGES      = 221,
+            ERROR_GET_LAST_CHATS = 230, ERROR_GET_CHAT_INFO          = 231, ERROR_CREATE_CHAT = 232, ERROR_ADD_TO_CHAT = 233,
         }
 
         #region Overrides of Object
 
         /// <inheritdoc />
-        public override string ToString() => nameof(this.Action) + ": " + this.Action + ", " + nameof(this.Messages) + ": " + this.Messages.Length + ", " + nameof(this.Chats) + ": " + this.Chats.Length +", " + nameof(this.Login) + ": " + this.Login + ", " + nameof(this.Token) + ": " + this.Token;
+        public string ToString(bool all) => nameof(this.Action) + ": " + this.Action + ", " + nameof(this.Messages) + ": " + this.Messages.Length + ", " + nameof(this.Chats) + ": " + this.Chats.Length + ", " + nameof(this.Login) + ": " + this.Login + ", " + nameof(this.Token) + ": " + this.Token;
+
+        /// <inheritdoc />
+        public override string ToString() => nameof(this.Action) + ": " + this.Action;
 
         #endregion
 
+        public static Data CreateInvite(ChatInfo    chatToInvite, LoginData reqUser) { return new Data( ActionEnum.ADD_TO_CHAT, reqUser, null, new[] { chatToInvite } ); }
+        public static Data CreateChat(ChatInfo      chatToCreate) { return new Data( ActionEnum.CREATE_CHAT,    new[] { chatToCreate } ); }
+        public static Data GetLastMessages(ChatInfo chatSelector) { return new Data( ActionEnum.GET_LAST_MESSAGES, new[] { chatSelector } ); }
+        public static Data SendMessage(Message      msg)          { return new Data( ActionEnum.SEND_MESSAGE,   new[] { msg } ); }
+        public static Data CreateLogin(LoginData    loginData)    { return new Data( ActionEnum.LOGIN,          loginData ); }
+        public static Data CreateRegister(LoginData registerData) { return new Data( ActionEnum.REGISTER,       registerData ); }
     }
 }

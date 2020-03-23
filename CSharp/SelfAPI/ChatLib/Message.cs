@@ -1,45 +1,43 @@
-﻿using System;
+﻿#region using
+
 using System.Diagnostics;
 using Newtonsoft.Json;
 
-namespace ChatLib
-{
-   public class Message
-    {
-        [JsonProperty( "Flags" )]
-        [field: JsonIgnore]
-        public int Flags { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
+#endregion
 
-        [JsonProperty( "Text" )]
+namespace ChatLib {
+    public class Message {
+        public Message(string text, int sender, int chat) {
+            this.Text   = text;
+            this.Sender = sender;
+            this.Chat   = chat;
+            this.Flags  = 0;
+        }
+
+        public Message() { }
+
+        public Message(string text, int sender, int chat, int flags) {
+            this.Flags  = flags;
+            this.Text   = text;
+            this.Sender = sender;
+            this.Chat   = chat;
+        }
+
+
+        [JsonProperty( "text" )]
         [field: JsonIgnore]
         public string Text { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
-        [JsonProperty( "Sender" )]
+        [JsonProperty( "sender" )]
         [field: JsonIgnore]
         public int Sender { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
-        [JsonProperty( "Data" )]
-        [field: JsonIgnore]
-        public DateTime Data { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
-
-        [JsonProperty( "Chat" )]
+        [JsonProperty( "chat" )]
         [field: JsonIgnore]
         public int Chat { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
-
-        public Message(string text, int sender, DateTime data, int chat) {
-            this.Text = text;
-            this.Sender = sender;
-            this.Data = data;
-            this.Chat = chat;
-        }
-
-        public Message(int flags, string text, int sender, DateTime data, int chat) {
-            this.Flags = flags;
-            this.Text = text;
-            this.Sender = sender;
-            this.Data = data;
-            this.Chat = chat;
-        }
+        [JsonProperty( "flags" )]
+        [field: JsonIgnore]
+        public int Flags { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
     }
 }

@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using ChatLib;
 
@@ -15,7 +8,11 @@ namespace ChatClient {
         public LoginForm() { InitializeComponent(); }
         public void SetController(ChatClientController controller) { this._comptroller = controller; }
 
-        public Data GetLoginPaket() { return new Data( Data.ActionEnum.LOGIN, GenerateLoginData(), "-" ); }
+        public Data GetLoginPaket() {
+            //return new Data( Data.ActionEnum.LOGIN, LoginData.CreateLoginData("XURI0", "123") );
+            
+            return new Data( Data.ActionEnum.LOGIN, GenerateLoginData() );
+        }
 
         private LoginData GenerateLoginData() { return LoginData.CreateLoginData( this.userNameBox.Text, this.passwordBox.Text ); }
 

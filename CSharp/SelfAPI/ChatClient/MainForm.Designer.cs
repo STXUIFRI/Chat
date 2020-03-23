@@ -38,7 +38,7 @@
             // 
             // animationTimer
             // 
-            this.animationTimer.Interval = 1;
+            this.animationTimer.Interval = 3;
             this.animationTimer.Tick += new System.EventHandler(this.AnimationTimer_Tick);
             // 
             // registerForm1
@@ -92,7 +92,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.SteelBlue;
+            this.BackColor = System.Drawing.Color.Purple;
             this.ClientSize = new System.Drawing.Size(400, 499);
             this.Controls.Add(this.registerForm1);
             this.Controls.Add(this.connectionForm1);

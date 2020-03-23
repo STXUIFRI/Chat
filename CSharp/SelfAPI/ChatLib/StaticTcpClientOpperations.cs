@@ -14,10 +14,10 @@ using Newtonsoft.Json;
 namespace ChatLib {
     public static class StaticTcpClientOpperations {
 
-        public const  int CHECK_INTERVAL      = 5;
-        public const  int RECONNECT_INTERVAL  = 500;
-        public const  int SLEEP_BETWEEN_SENDS = 100;
-        private const int BUFFER_SIZE         = 1024 * 4;
+        public static  int CHECK_INTERVAL      = 5;
+        public static  int RECONNECT_INTERVAL  = 500;
+        public static  int SLEEP_BETWEEN_SENDS = 100;
+        private static int BUFFER_SIZE         = 1024 * 4;
 
         #region ControalMethods
 
@@ -29,7 +29,7 @@ namespace ChatLib {
 
         public static async Task SendDataList(IEnumerable<Data> dataObjects, TcpClient cl) {
             foreach ( var dataO in dataObjects ) {
-                string serialized = JsonConvert.SerializeObject( dataO );
+                string serialized = JsonConvert.SerializeObject( dataO  )+ "\n";
                 Console.WriteLine( serialized );
                 await cl.Client.SendAsync( new ArraySegment<byte>( Encoding.UTF8.GetBytes( serialized ) ), SocketFlags.None );
                 Thread.Sleep( SLEEP_BETWEEN_SENDS );
