@@ -1,6 +1,8 @@
 package apiSharpServer.data;
 
 import apiSharpServer.ActionEnum;
+import com.mysql.cj.xdevapi.JsonArray;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Data {
@@ -10,6 +12,9 @@ public class Data {
     public String token;
     public Chat[] chats;
 
+    public Data(int action) {
+        this.action = action;
+    }
 
     public Data(int action, Message[] message, Login login, String token) {
         this.action = action;
@@ -44,15 +49,31 @@ public class Data {
         setAction(in.getInt("action"));
         setToken(in.getString("token"));
 
-        if ((action == ActionEnum.LOGIN.getI() || action == ActionEnum.REGISTER.getI()) && in.get("login") != null) {
+        if ((action == ActionEnum.LOGIN.getI() || action == ActionEnum.REGISTER.getI()||action == ActionEnum.ADD_TO_CHAT.getI()) && in.get("login") != null) {
             JSONObject t = (JSONObject) in.get("login");
             Login l = new Login();
             l.readFromJson(t);
             setLogin(l);
-        } else if (in.get("messages") != null) {
-            //TODO implent :)
         }
-
+        if ((action == ActionEnum.SEND_MESSAGE.getI())&&in.get("messages") != null) {
+            //TODO implent :)
+            JSONArray array = in.getJSONArray("messages");
+            messages = new Message[array.length()];
+            for (int i = 0; i < array.length(); i++) {
+              Message newMessage = new Message();
+              newMessage.readFromJson(array.getJSONObject(i));
+                messages[i] = newMessage;
+            }
+        }
+        if((action == ActionEnum.GET_LAST_MESSAGES.getI()||action == ActionEnum.CREATE_CHAT.getI()||action == ActionEnum.ADD_TO_CHAT.getI())&&in.get("chats") != null){
+            JSONArray array = in.getJSONArray("chats");
+            chats = new Chat[array.length()];
+            for (int i = 0; i < array.length(); i++) {
+                Chat newChat = new Chat();
+                newChat.readFromJson(array.getJSONObject(i));
+                chats[i] = newChat;
+            }
+        }
     }
 
     public JSONObject packToJson() {
@@ -60,9 +81,9 @@ public class Data {
 
         if (action == ActionEnum.LOGIN.getI() || action == ActionEnum.REGISTER.getI()) {
             out.put("login", login);
-        } else if (action == ActionEnum.GET_LAST_MESSAGES.getI()) {
+        } else if (action == ActionEnum.SUCCEED_GET_LAST_MESSAGES.getI()) {
             out.put("messages", messages);
-        } else if (action == ActionEnum.GET_LAST_CHATS.getI() || action == ActionEnum.CREATE_CHAT.getI()) {
+        } else if (action == ActionEnum.SUCCEED_GET_LAST_CHATS.getI() || action == ActionEnum.CREATE_CHAT.getI()) {
             out.put("chats", chats);
         }
 
@@ -70,6 +91,22 @@ public class Data {
         out.put("token", token);
 
         return out;
+    }
+
+    public Message[] getMessages() {
+        return messages;
+    }
+
+    public void setMessages(Message[] messages) {
+        this.messages = messages;
+    }
+
+    public Chat[] getChats() {
+        return chats;
+    }
+
+    public void setChats(Chat[] chats) {
+        this.chats = chats;
     }
 
     public int getAction() {
