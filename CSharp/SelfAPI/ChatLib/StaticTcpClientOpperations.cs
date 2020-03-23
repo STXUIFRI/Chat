@@ -22,7 +22,7 @@ namespace ChatLib {
         #region ControalMethods
 
         public static void SleepForClData(ref TcpClient cl) {
-            while ( cl.Available < 0 ) Thread.Sleep( CHECK_INTERVAL );
+            while ( cl.Available <= 0 ) Thread.Sleep( CHECK_INTERVAL );
         }
 
         private static async Task SendDataList(Data data, TcpClient cl) { await SendDataList( new[] { data }, cl ); }

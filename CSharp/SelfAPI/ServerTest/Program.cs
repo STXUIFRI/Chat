@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -11,12 +12,16 @@ using ChatLib;
 
 namespace ServerTest {
     class Program {
-
+        private const int TOSEND_MESSAGES_I    = 250;
+        private const int CLIENTTS_TO_STARTR_I = 10;      
+        const int TOTAL = ( TOSEND_MESSAGES_I * CLIENTTS_TO_STARTR_I + CLIENTTS_TO_STARTR_I );
 
         static void Main(string[] args) {
             StaticTcpClientOpperations.SLEEP_BETWEEN_SENDS = 10;
             new Program();
         }
+
+        static List<Thread> _threads = new List<Thread>();
 
         public Program() {
             //for ( int j = 0; j < 20; j++ ) {
@@ -62,31 +67,69 @@ namespace ServerTest {
             //    
             //    Thread.Sleep( 1000 );
             //}
-            ChatClientController _controller = new ChatClientController();
-            _controller.SQLINJECTIONTEST = false;
-            _controller.StartClient( new IPEndPoint( IPAddress.Parse( "25.67.179.166" ), 6969 ), Callback );
-            _controller.ToUI        += ControllerOnToUI;
-            _controller.ToUIOnError += ControllerOnToUIOnError;
-            //ChatLib.LoginData loginData = LoginData.CreateLoginData( "XURI" + new Random().Next(), "123" );
-            //_controller.PaketQueue.Enqueue( Data.CreateRegister( loginData ) );
-            //_controller.PaketQueue.Enqueue( Data.CreateLogin( loginData ) );
-                  var r = new Random();
-            for ( int i = 0; i < 5; i++ ) {
-                _controller.PaketQueue.Enqueue( Data.SendMessage( new Message(DateTime.Now + ": "+ r.Next(), 0, 1,0) ) );
-                //Thread.Sleep( 300 );
+
+            for ( int i = 0; i < TOSEND_MESSAGES_I; i++ ) {
+                ChatClientController _controller = new ChatClientController();
+                _controller.SQLINJECTIONTEST = false;
+                _controller.StartClient( new IPEndPoint( IPAddress.Parse( "25.67.179.166" ), 6969 ), Callback );
+                _controller.ToUI        += ControllerOnToUI;
+                _controller.ToUIOnError += ControllerOnToUIOnError;
+                ChatLib.LoginData loginData = LoginData.CreateLoginData( "XURI" + new Random().Next(), "123" );
+                _controller.PaketQueue.Enqueue( Data.CreateRegister( loginData ) );
+                _controller.PaketQueue.Enqueue( Data.CreateLogin( loginData ) );
+                _controller.PaketQueue.Enqueue( Data.SendMessage( new Message( DateTime.Now + ": " +1000, 0, 1, 0 ) ) );
+                Thread.Sleep( 1000 );
+                _controller.Running = false;
             }
 
-            //for ( int i = 0; i < 10; i++ ) {
-            //    _controller.PaketQueue.Enqueue( Data.CreateInvite( new ChatInfo(  ),  ) );
-            //    Thread.Sleep( 500 );
+            //for ( int z = 0; z < CLIENTTS_TO_STARTR_I; z++ ) {
+            //    var t = new Thread( () => {
+            //        Thread.Sleep( new Random().Next( 0, 2000 ) );
+            //        ChatClientController _controller = new ChatClientController();
+            //        _controller.SQLINJECTIONTEST = false;
+            //        _controller.StartClient( new IPEndPoint( IPAddress.Parse( "25.67.179.166" ), 6969 ), Callback );
+            //        _controller.ToUI        += ControllerOnToUI;
+            //        _controller.ToUIOnError += ControllerOnToUIOnError;
+            //        ChatLib.LoginData loginData = LoginData.CreateLoginData( "XURI" + new Random().Next(), "123" );
+            //        _controller.PaketQueue.Enqueue( Data.CreateRegister( loginData ) );
+            //        _controller.PaketQueue.Enqueue( Data.CreateLogin( loginData ) );
+            //        var r = new Random();
+            //
+            //        for ( int i = 0; i < TOSEND_MESSAGES_I; i++ ) {
+            //            _controller.PaketQueue.Enqueue( Data.SendMessage( new Message( DateTime.Now + ": " + r.Next(), 0, 1, 0 ) ) );
+            //            //Thread.Sleep( 300 );
+            //        }
+            //
+            //        //for ( int i = 0; i < 10; i++ ) {
+            //        //    _controller.PaketQueue.Enqueue( Data.CreateInvite( new ChatInfo(  ),  ) );
+            //        //    Thread.Sleep( 500 );
+            //        //}
+            //    } );
+            //    _threads.Add( t );
+            //    t.Start();
             //}
 
+            Thread.Sleep( 1000 );
 
+            while ( true ) {
+                co:
+
+                foreach ( var thread in _threads ) {
+                    if ( thread.IsAlive ) goto co;
+                }
+
+                break;
+            }
+                                                                                                                                           
+            Console.WriteLine( "Lost: "  + ( TOTAL - this.infos ) );
+            Console.WriteLine( "total: " + TOTAL );
+
+            //Console.SetOut( TextWriter.Null );
             Console.ReadLine();
         }
 
-        private int errors = 0;
-        private int infos = 0;
+        private int errors   = 0;
+        private int infos    = 0;
         private int callback = 0;
 
         private void ControllerOnToUIOnError(Data obj) {
@@ -113,6 +156,6 @@ namespace ServerTest {
             settitel();
         }
 
-        private void settitel() { Console.Title = "ERRORS: " + this.errors + "  MESSAGES: " + this.infos + "  CALLBACKS: " + this.callback; }
+        private void settitel() { Console.Title ="Total: "+TOTAL+ "  ERRORS: " + this.errors + "  MESSAGES: " + this.infos + "  CALLBACKS: " + this.callback ;  }
     }
 }

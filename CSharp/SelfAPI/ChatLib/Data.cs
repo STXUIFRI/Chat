@@ -67,6 +67,7 @@ namespace ChatLib {
             ERROR_LOGIN          = 210, ERROR_REGISTER               = 211,
             ERROR_MESSAGE_SEND   = 220, ERROR_GET_LAST_MESSAGES      = 221,
             ERROR_GET_LAST_CHATS = 230, ERROR_GET_CHAT_INFO          = 231, ERROR_CREATE_CHAT = 232, ERROR_ADD_TO_CHAT = 233,
+            ERROR_CLIENT_CLOSED  = -100,
         }
 
         #region Overrides of Object

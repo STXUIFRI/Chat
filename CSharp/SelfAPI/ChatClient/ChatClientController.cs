@@ -35,6 +35,7 @@ namespace ChatClient {
                     while ( this._threads.Count > 0 ) {
                         this._threads[0]?.Abort();
                         this._threads.RemoveAt( 0 );
+                        this.cl?.Close();
                     }
 
                     this._threads.Clear();
@@ -43,9 +44,9 @@ namespace ChatClient {
                 this._running = value;
             }
         }
-
+        
+        TcpClient cl = default;
         private async void RunClientDaemon(IPEndPoint ipE, Action<ConnectionState> callback) {
-            TcpClient cl;
             this.Running = true;
 
             while ( this.Running ) {
@@ -197,6 +198,7 @@ namespace ChatClient {
                         ProcessReceivedPacketes( dataPackets );
                     } catch (Exception ex) {
                         Console.WriteLine( ex );
+                        //OnToUiOnError( new Data(Data.ActionEnum.ERROR_CLIENT_CLOSED) );
                     }
 
                     if ( dataPackets == null ) continue;
