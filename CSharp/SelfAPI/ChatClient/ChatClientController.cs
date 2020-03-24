@@ -22,7 +22,9 @@ namespace ChatClient {
         public readonly  Queue<Data>  PaketQueue = new Queue<Data>();
 
         private bool _running;
-        public  bool SQLINJECTIONTEST = true;
+
+        private TcpClient cl;
+        public  bool      SQLINJECTIONTEST = true;
 
         public string MYTOKEN { get; set; }
 
@@ -46,20 +48,18 @@ namespace ChatClient {
             }
         }
 
-        TcpClient cl = default;
-
         private async void RunClientDaemon(IPEndPoint ipE, Action<ConnectionState> callback) {
             this.Running = true;
 
             while ( this.Running ) {
-                cl = new TcpClient();
+                this.cl = new TcpClient();
                 callback?.Invoke( ConnectionState.Connecting );
 
                 try {
                     var re = new Thread( async () => {
                         try {
-                            while ( !cl.Connected ) Thread.Sleep( StaticTcpClientOpperations.CHECK_INTERVAL );
-                            await ReceivedPaketThread( cl, callback );
+                            while ( !this.cl.Connected ) Thread.Sleep( StaticTcpClientOpperations.CHECK_INTERVAL );
+                            await ReceivedPaketThread( this.cl, callback );
                         } catch (Exception ex) {
                             Console.WriteLine( ex );
                         }
@@ -67,8 +67,8 @@ namespace ChatClient {
 
                     var se = new Thread( async () => {
                         try {
-                            while ( !cl.Connected ) Thread.Sleep( StaticTcpClientOpperations.CHECK_INTERVAL );
-                            await SendPaketThread( cl, callback );
+                            while ( !this.cl.Connected ) Thread.Sleep( StaticTcpClientOpperations.CHECK_INTERVAL );
+                            await SendPaketThread( this.cl, callback );
                         } catch (Exception ex) {
                             Console.WriteLine( ex );
                         }
@@ -81,9 +81,9 @@ namespace ChatClient {
                     Console.WriteLine( e );
                 }
 
-                while ( !cl.Connected ) {
+                while ( !this.cl.Connected ) {
                     try {
-                        await cl.ConnectAsync( ipE.Address, ipE.Port );
+                        await this.cl.ConnectAsync( ipE.Address, ipE.Port );
                     } catch (Exception e) {
                         Console.WriteLine( e );
                     }
@@ -93,12 +93,12 @@ namespace ChatClient {
 
                 callback?.Invoke( ConnectionState.Open );
 
-                while ( cl.Connected ) Thread.Sleep( StaticTcpClientOpperations.RECONNECT_INTERVAL );
+                while ( this.cl.Connected ) Thread.Sleep( StaticTcpClientOpperations.RECONNECT_INTERVAL );
                 callback?.Invoke( ConnectionState.Closed );
 
                 this.Running = false;
-                cl.Close();
-                cl.Dispose();
+                this.cl.Close();
+                this.cl.Dispose();
                 this.Running = true;
             }
         }
@@ -164,9 +164,7 @@ namespace ChatClient {
                             finalSend = toSend.ToArray();
                         }
                         else {
-                            foreach ( var packet in packets ) {
-                                packet.Token = this.MYTOKEN;
-                            }
+                            foreach ( var packet in packets ) packet.Token = this.MYTOKEN;
 
                             finalSend = packets;
                         }
@@ -231,6 +229,9 @@ namespace ChatClient {
                     case Data.ActionEnum.GET_CHAT_INFO:
                     case Data.ActionEnum.CREATE_CHAT:
                     case Data.ActionEnum.ADD_TO_CHAT:
+                    case Data.ActionEnum.GET_INVITES:
+                    case Data.ActionEnum.ACCEPT_INVITE:
+                    case Data.ActionEnum.DENY_INVITE:
                         Console.WriteLine( "Fail: Not A Server Response Action:\n" + dataPacket.Action );
                         break;
                     case Data.ActionEnum.SUCCEED:
@@ -239,9 +240,7 @@ namespace ChatClient {
                         break;
 
                     case Data.ActionEnum.SUCCEED_LOGIN:
-                        if ( dataPacket.Token != null ) {
-                            this.MYTOKEN = dataPacket.Token;
-                        }
+                        if ( dataPacket.Token != null ) this.MYTOKEN = dataPacket.Token;
 
                         Console.ForegroundColor = ConsoleColor.DarkMagenta;
                         Console.WriteLine( "TOKEN SET" );
@@ -256,9 +255,12 @@ namespace ChatClient {
                     case Data.ActionEnum.SUCCEED_GET_CHAT_INFO:
                     case Data.ActionEnum.SUCCEED_CREATE_CHAT:
                     case Data.ActionEnum.SUCCEED_ADD_TO_CHAT:
+                    case Data.ActionEnum.SUCCEED_GET_INVITES:
+                    case Data.ActionEnum.SUCCEED_ACCEPT_INVITE:
+                    case Data.ActionEnum.SUCCEED_DENY_INVITE:
                         OnToUi( dataPacket );
-
                         break;
+
                     case Data.ActionEnum.ERROR:
                     case Data.ActionEnum.ERROR_LOGIN:
                     case Data.ActionEnum.ERROR_REGISTER:
@@ -270,8 +272,10 @@ namespace ChatClient {
                     case Data.ActionEnum.ERROR_ADD_TO_CHAT:
                     case Data.ActionEnum.ERROR_SQL_INJECTION_DETECTED:
                     case Data.ActionEnum.ERROR_CLIENT_CLOSED:
+                    case Data.ActionEnum.ERROR_GET_INVITES:
+                    case Data.ActionEnum.ERROR_ACCEPT_INVITE:
+                    case Data.ActionEnum.ERROR_DENY_INVITE:
                         OnToUiOnError( dataPacket );
-
                         break;
                     default: throw new ArgumentOutOfRangeException();
                 }

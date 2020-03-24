@@ -17,14 +17,13 @@ namespace ChatClient {
         public void SetController(ChatClientController controller) { this._comptroller = controller; }
 
         private void Register_Click(object sender, EventArgs e) {
-            var regObj = Data.CreateRegister(  GenerateRegisterData());
+            var regObj = Data.CreateRegister( GenerateRegisterData() );
             this._comptroller.PaketQueue.Enqueue( regObj );
         }
 
         private LoginData GenerateRegisterData() { return LoginData.CreateRegisterData( this.userNameBox.Text, this.passwordBox.Text, (int) this.AgeBox.Value, (LoginData.GenderTypes) this.genderBox.SelectedItem ); }
 
-        
-        public Data GetLoginPaket() { return new Data( Data.ActionEnum.LOGIN, GenerateLoginData() ); }
+        public Data GetLoginPaket() { return Data.CreateLogin( GenerateLoginData() ); }
 
         private LoginData GenerateLoginData() { return LoginData.CreateLoginData( this.userNameBox.Text, this.passwordBox.Text ); }
     }

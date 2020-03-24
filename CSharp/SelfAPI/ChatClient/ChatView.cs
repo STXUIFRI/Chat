@@ -1,6 +1,7 @@
 ﻿#region using
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Media;
@@ -14,7 +15,6 @@ namespace ChatClient {
     public partial class ChatView : UserControl {
         private ChatClientController _comptroller;
 
-
         private int    _currentChat     = -1;
         private string _currentChatName = "Welcome Chanel";
 
@@ -26,6 +26,7 @@ namespace ChatClient {
         private void ChatView_Load(object sender, EventArgs e) {
             GetLastChats();
             GetLastMessages();
+            GetLastInvites();
             this.UserLabel.Text   = this._comptroller.MYUSERNAME;
             this.id_label.Text    = "TODO: TAKE Token"; //this._comptroller.MYID.ToString();
             this.TokenLabel.Text  = "TOKEN: " + this._comptroller.MYTOKEN;
@@ -58,6 +59,11 @@ namespace ChatClient {
             this._comptroller.PaketQueue.Enqueue( lastChatsPaket );
         }
 
+        private void GetLastInvites() {
+            var lastChatsPaket = Data.GetInvites();
+            this._comptroller.PaketQueue.Enqueue( lastChatsPaket );
+        }
+
         private void ChatUiUpdateInternal(Data packet) {
             switch (packet.Action) {
                 case Data.ActionEnum.SUCCEED_MESSAGE_SEND:
@@ -75,11 +81,12 @@ namespace ChatClient {
                     }
 
                     break;
+
                 case Data.ActionEnum.SUCCEED_GET_LAST_CHATS:
                     var ci = packet.Chats;
-                    ResetChats();
 
                     if ( ci != null ) {
+                        ResetChats();
                         this.ChatsView.Items.AddRange( ci.Select( x => new ListViewItem( new[] { x.Title, x.ChatId.ToString(), x.Creator.ToString() } ) ).ToArray() );
                     }
                     else {
@@ -87,15 +94,39 @@ namespace ChatClient {
                     }
 
                     break;
-                case Data.ActionEnum.SUCCEED_GET_CHAT_INFO: break;
+
                 case Data.ActionEnum.SUCCEED_CREATE_CHAT:
                     GetLastChats();
                     break;
-                case Data.ActionEnum.SUCCEED_ADD_TO_CHAT: break;
-                case Data.ActionEnum.SUCCEED:             break;
-                default:                                  throw new ArgumentOutOfRangeException();
+
+                case Data.ActionEnum.SUCCEED_DENY_INVITE:
+                case Data.ActionEnum.SUCCEED_ACCEPT_INVITE:
+                    GetLastInvites();
+                    GetLastChats();
+                    break;
+
+                case Data.ActionEnum.SUCCEED_GET_INVITES:
+                    var ii = packet.Invites;
+
+                    if ( ii != null ) {
+                        ResetInvites();
+                        this.invitesView.Items.AddRange( ii.Select( x => new ListViewItem( new[] { x.Sender, x.ChatName, x.Text, x.InviteID.ToString() } ) ).ToArray() );
+                    }
+                    else {
+                        Console.WriteLine( nameof(packet.Invites) + " Object Null" );
+                    }
+
+                    break;
+
+                case Data.ActionEnum.SUCCEED_GET_CHAT_INFO: break;
+                case Data.ActionEnum.SUCCEED_ADD_TO_CHAT:   break;
+                case Data.ActionEnum.SUCCEED:               break;
+
+                default: throw new ArgumentOutOfRangeException();
             }
         }
+
+        private void ResetInvites() { this.invitesView.Items.Clear(); }
 
         private void ResetChats() {
             this.ChatsView.Items.Clear();
@@ -157,6 +188,7 @@ namespace ChatClient {
         private void Button2_Click(object sender, EventArgs e) {
             GetLastChats();
             GetLastMessages();
+            GetLastInvites();
         }
 
         private void Button1_Click(object sender, EventArgs e) { GetLastChats(); }
@@ -165,7 +197,6 @@ namespace ChatClient {
 
         private void CChat_Click(object sender, EventArgs e) {
             if ( MessageBox.Show( "Are you Sure you Want To Create The Chat \"" + this.chatNameBox.Text + "\"", "Create Chat", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes ) {
-
                 var chatToCreate = new ChatInfo( 0, 0, 0, this.chatNameBox.Text );
 
                 var packet = Data.CreateChat( chatToCreate );
@@ -179,11 +210,9 @@ namespace ChatClient {
                 return;
             }
 
-            if ( MessageBox.Show( "Are you Sure you Want To invite \"" + this.inviteUsernameBox.Text + "\" to chat \"" + this._currentChatName + "\"", "Invite", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes ) {
-                var chatToCreate = new ChatInfo( this._currentChat, 0, 0, "" );
-                var reqUser      = LoginData.OnlyUserName( this.inviteUsernameBox.Text );
-
-                var packet = Data.CreateInvite( chatToCreate, reqUser );
+            if ( MessageBox.Show( "Are you Sure you Want To invite \"" + this.inviteUsernameBox.Text + "\" to chat \"" + this._currentChatName + "\"\nMessage: " + this.inviteMessage.Text, "Invite", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes ) {
+                var chatToInvite = new InviteInfo( this._currentChat, this.inviteUsernameBox.Text, this.inviteMessage.Text );
+                var packet       = Data.CreateInvite( chatToInvite );
                 this._comptroller.PaketQueue.Enqueue( packet );
             }
         }
@@ -193,5 +222,27 @@ namespace ChatClient {
             //GetLastChats();
             this.columnHeader2.Width = -2;
         }
+
+        private IEnumerable<int> GetInviteId() {
+            if ( this.invitesView.SelectedItems.Count <= 0 ) MessageBox.Show( "Select An Invite First" );
+
+            foreach ( ListViewItem ic in this.invitesView.SelectedItems ) yield return int.Parse( ic.SubItems[3].Text );
+        }
+
+        private void Deny_Click(object sender, EventArgs e) {
+            foreach ( int i in GetInviteId() ) {
+                var packet = Data.DenyInvite( i );
+                this._comptroller.PaketQueue.Enqueue( packet );
+            }
+        }
+
+        private void accept_Click(object sender, EventArgs e) {
+            foreach ( int i in GetInviteId() ) {
+                var packet = Data.AcceptInvite( i );
+                this._comptroller.PaketQueue.Enqueue( packet );
+            }
+        }
+
+        private void Getnvites_Click(object sender, EventArgs e) { GetLastInvites(); }
     }
 }

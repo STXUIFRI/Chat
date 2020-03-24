@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("Select A Chat To View Messages");
+            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("Select A Chat To View Messages");
             this.id_label = new System.Windows.Forms.Label();
             this.UserInput = new System.Windows.Forms.TextBox();
             this.UserLabel = new System.Windows.Forms.Label();
@@ -58,13 +58,27 @@
             this.SendButton = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.panel9 = new System.Windows.Forms.Panel();
+            this.inviteMessage = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.panel8 = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.panel7 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.invitesView = new System.Windows.Forms.ListView();
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.panel10 = new System.Windows.Forms.Panel();
+            this.button5 = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
+            this.tabPage5 = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
             this.TokenLabel = new System.Windows.Forms.Label();
             this.updater = new System.Windows.Forms.Timer(this.components);
+            this.getnvites = new System.Windows.Forms.Button();
             this.panel4.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.panel5.SuspendLayout();
@@ -79,8 +93,12 @@
             this.panel2.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.panel9.SuspendLayout();
+            this.panel8.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.panel7.SuspendLayout();
+            this.tabPage3.SuspendLayout();
+            this.panel10.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -159,7 +177,7 @@
             this.MessageView.HoverSelection = true;
             this.MessageView.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.MessageView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1});
+            listViewItem3});
             this.MessageView.Location = new System.Drawing.Point(3, 3);
             this.MessageView.Name = "MessageView";
             this.MessageView.Size = new System.Drawing.Size(669, 505);
@@ -222,9 +240,9 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Right;
             this.groupBox1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox1.Location = new System.Drawing.Point(702, 0);
+            this.groupBox1.Location = new System.Drawing.Point(612, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(198, 90);
+            this.groupBox1.Size = new System.Drawing.Size(288, 90);
             this.groupBox1.TabIndex = 11;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Refrech";
@@ -233,11 +251,12 @@
             // 
             this.panel5.AutoSize = true;
             this.panel5.Controls.Add(this.button3);
+            this.panel5.Controls.Add(this.getnvites);
             this.panel5.Controls.Add(this.button1);
             this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel5.Location = new System.Drawing.Point(3, 20);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(192, 36);
+            this.panel5.Size = new System.Drawing.Size(282, 36);
             this.panel5.TabIndex = 13;
             // 
             // button3
@@ -246,7 +265,7 @@
             this.button3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button3.Location = new System.Drawing.Point(90, 0);
+            this.button3.Location = new System.Drawing.Point(180, 0);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(102, 36);
             this.button3.TabIndex = 10;
@@ -260,7 +279,7 @@
             this.panel3.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel3.Location = new System.Drawing.Point(3, 56);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(192, 31);
+            this.panel3.Size = new System.Drawing.Size(282, 31);
             this.panel3.TabIndex = 12;
             // 
             // button2
@@ -271,7 +290,7 @@
             this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button2.Location = new System.Drawing.Point(0, 0);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(192, 31);
+            this.button2.Size = new System.Drawing.Size(282, 31);
             this.button2.TabIndex = 6;
             this.button2.Text = "All";
             this.button2.UseVisualStyleBackColor = true;
@@ -285,7 +304,7 @@
             this.inviteUsernameBox.Cursor = System.Windows.Forms.Cursors.Default;
             this.inviteUsernameBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.inviteUsernameBox.ForeColor = System.Drawing.Color.OrangeRed;
-            this.inviteUsernameBox.Location = new System.Drawing.Point(92, 31);
+            this.inviteUsernameBox.Location = new System.Drawing.Point(89, 0);
             this.inviteUsernameBox.Name = "inviteUsernameBox";
             this.inviteUsernameBox.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
             this.inviteUsernameBox.Size = new System.Drawing.Size(369, 35);
@@ -298,9 +317,8 @@
             this.invite.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.invite.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.invite.Location = new System.Drawing.Point(461, 31);
-            this.invite.MaximumSize = new System.Drawing.Size(0, 35);
             this.invite.Name = "invite";
-            this.invite.Size = new System.Drawing.Size(205, 35);
+            this.invite.Size = new System.Drawing.Size(205, 77);
             this.invite.TabIndex = 14;
             this.invite.Text = "Invite to Selected Chat";
             this.invite.UseVisualStyleBackColor = true;
@@ -366,6 +384,8 @@
             // 
             this.tabControal1.Controls.Add(this.tabPage1);
             this.tabControal1.Controls.Add(this.tabPage2);
+            this.tabControal1.Controls.Add(this.tabPage3);
+            this.tabControal1.Controls.Add(this.tabPage5);
             this.tabControal1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControal1.Location = new System.Drawing.Point(0, 0);
             this.tabControal1.Name = "tabControal1";
@@ -423,22 +443,67 @@
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.inviteUsernameBox);
-            this.groupBox3.Controls.Add(this.label2);
+            this.groupBox3.Controls.Add(this.panel9);
+            this.groupBox3.Controls.Add(this.panel8);
             this.groupBox3.Controls.Add(this.invite);
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox3.Location = new System.Drawing.Point(3, 75);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(669, 76);
+            this.groupBox3.Size = new System.Drawing.Size(669, 111);
             this.groupBox3.TabIndex = 17;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Invite to Chat";
+            // 
+            // panel9
+            // 
+            this.panel9.Controls.Add(this.inviteMessage);
+            this.panel9.Controls.Add(this.label3);
+            this.panel9.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel9.Location = new System.Drawing.Point(3, 71);
+            this.panel9.Name = "panel9";
+            this.panel9.Size = new System.Drawing.Size(458, 35);
+            this.panel9.TabIndex = 20;
+            // 
+            // inviteMessage
+            // 
+            this.inviteMessage.AcceptsReturn = true;
+            this.inviteMessage.BackColor = System.Drawing.Color.DarkSlateBlue;
+            this.inviteMessage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.inviteMessage.Cursor = System.Windows.Forms.Cursors.Default;
+            this.inviteMessage.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.inviteMessage.ForeColor = System.Drawing.Color.OrangeRed;
+            this.inviteMessage.Location = new System.Drawing.Point(126, 0);
+            this.inviteMessage.Name = "inviteMessage";
+            this.inviteMessage.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
+            this.inviteMessage.Size = new System.Drawing.Size(332, 35);
+            this.inviteMessage.TabIndex = 17;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Dock = System.Windows.Forms.DockStyle.Left;
+            this.label3.Location = new System.Drawing.Point(0, 0);
+            this.label3.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(126, 29);
+            this.label3.TabIndex = 18;
+            this.label3.Text = "Message:";
+            // 
+            // panel8
+            // 
+            this.panel8.Controls.Add(this.inviteUsernameBox);
+            this.panel8.Controls.Add(this.label2);
+            this.panel8.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel8.Location = new System.Drawing.Point(3, 31);
+            this.panel8.Name = "panel8";
+            this.panel8.Size = new System.Drawing.Size(458, 40);
+            this.panel8.TabIndex = 19;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Dock = System.Windows.Forms.DockStyle.Left;
-            this.label2.Location = new System.Drawing.Point(3, 31);
+            this.label2.Location = new System.Drawing.Point(0, 0);
             this.label2.Margin = new System.Windows.Forms.Padding(8, 0, 8, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(89, 29);
@@ -479,6 +544,101 @@
             this.label1.TabIndex = 14;
             this.label1.Text = "Name:";
             // 
+            // tabPage3
+            // 
+            this.tabPage3.BackColor = System.Drawing.Color.DarkSlateBlue;
+            this.tabPage3.Controls.Add(this.invitesView);
+            this.tabPage3.Controls.Add(this.panel10);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(675, 562);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Invites";
+            // 
+            // invitesView
+            // 
+            this.invitesView.BackColor = System.Drawing.Color.DarkSlateBlue;
+            this.invitesView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader3,
+            this.columnHeader5,
+            this.columnHeader6});
+            this.invitesView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.invitesView.Font = new System.Drawing.Font("Consolas", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.invitesView.ForeColor = System.Drawing.Color.OrangeRed;
+            this.invitesView.HideSelection = false;
+            this.invitesView.HoverSelection = true;
+            this.invitesView.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.invitesView.Location = new System.Drawing.Point(3, 3);
+            this.invitesView.Name = "invitesView";
+            this.invitesView.Size = new System.Drawing.Size(669, 515);
+            this.invitesView.TabIndex = 9;
+            this.invitesView.UseCompatibleStateImageBehavior = false;
+            this.invitesView.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "Sender";
+            this.columnHeader3.Width = 109;
+            // 
+            // columnHeader5
+            // 
+            this.columnHeader5.Text = "Chat";
+            this.columnHeader5.Width = 81;
+            // 
+            // columnHeader6
+            // 
+            this.columnHeader6.Text = "Message";
+            this.columnHeader6.Width = 422;
+            // 
+            // panel10
+            // 
+            this.panel10.Controls.Add(this.button5);
+            this.panel10.Controls.Add(this.button4);
+            this.panel10.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel10.Location = new System.Drawing.Point(3, 518);
+            this.panel10.Name = "panel10";
+            this.panel10.Size = new System.Drawing.Size(669, 41);
+            this.panel10.TabIndex = 10;
+            // 
+            // button5
+            // 
+            this.button5.AutoSize = true;
+            this.button5.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.button5.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button5.Location = new System.Drawing.Point(84, 0);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(585, 41);
+            this.button5.TabIndex = 11;
+            this.button5.Text = "ACCEPT";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.accept_Click);
+            // 
+            // button4
+            // 
+            this.button4.AutoSize = true;
+            this.button4.Dock = System.Windows.Forms.DockStyle.Left;
+            this.button4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button4.Location = new System.Drawing.Point(0, 0);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(84, 41);
+            this.button4.TabIndex = 6;
+            this.button4.Text = "DENY";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.Deny_Click);
+            // 
+            // tabPage5
+            // 
+            this.tabPage5.Location = new System.Drawing.Point(4, 22);
+            this.tabPage5.Name = "tabPage5";
+            this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage5.Size = new System.Drawing.Size(675, 562);
+            this.tabPage5.TabIndex = 3;
+            this.tabPage5.Text = "tabPage5";
+            this.tabPage5.UseVisualStyleBackColor = true;
+            // 
             // panel1
             // 
             this.panel1.Controls.Add(this.TokenLabel);
@@ -504,6 +664,20 @@
             // 
             this.updater.Interval = 10000;
             this.updater.Tick += new System.EventHandler(this.Updater_Tick);
+            // 
+            // getnvites
+            // 
+            this.getnvites.AutoSize = true;
+            this.getnvites.Dock = System.Windows.Forms.DockStyle.Left;
+            this.getnvites.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.getnvites.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.getnvites.Location = new System.Drawing.Point(90, 0);
+            this.getnvites.Name = "getnvites";
+            this.getnvites.Size = new System.Drawing.Size(90, 36);
+            this.getnvites.TabIndex = 11;
+            this.getnvites.Text = "Invites";
+            this.getnvites.UseVisualStyleBackColor = true;
+            this.getnvites.Click += new System.EventHandler(this.Getnvites_Click);
             // 
             // ChatView
             // 
@@ -539,10 +713,17 @@
             this.tabPage2.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.panel9.ResumeLayout(false);
+            this.panel9.PerformLayout();
+            this.panel8.ResumeLayout(false);
+            this.panel8.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.panel7.ResumeLayout(false);
             this.panel7.PerformLayout();
+            this.tabPage3.ResumeLayout(false);
+            this.panel10.ResumeLayout(false);
+            this.panel10.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.ResumeLayout(false);
@@ -587,5 +768,19 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.TabPage tabPage5;
+        private System.Windows.Forms.ListView invitesView;
+        private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.ColumnHeader columnHeader5;
+        private System.Windows.Forms.ColumnHeader columnHeader6;
+        private System.Windows.Forms.Panel panel9;
+        private System.Windows.Forms.TextBox inviteMessage;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Panel panel8;
+        private System.Windows.Forms.Panel panel10;
+        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button getnvites;
     }
 }

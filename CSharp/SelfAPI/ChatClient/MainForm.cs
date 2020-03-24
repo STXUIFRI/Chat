@@ -71,6 +71,8 @@ namespace ChatClient {
                     case Data.ActionEnum.SUCCEED_GET_CHAT_INFO:
                     case Data.ActionEnum.SUCCEED_CREATE_CHAT:
                     case Data.ActionEnum.SUCCEED_ADD_TO_CHAT:
+                    case Data.ActionEnum.SUCCEED_GET_INVITES:
+                    case Data.ActionEnum.SUCCEED_ACCEPT_INVITE:
                         this.chatView1.ChatUiUpdate( obj );
                         break;
                     default: break;

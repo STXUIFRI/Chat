@@ -9,9 +9,7 @@ namespace ChatClient {
         public LoginForm() { InitializeComponent(); }
         public void SetController(ChatClientController controller) { this._comptroller = controller; }
 
-        public Data GetLoginPaket() {
-            return this.checkBox1.Checked ? new Data( Data.ActionEnum.LOGIN, LoginData.CreateLoginData( "XURI0", "123" ) ) : new Data( Data.ActionEnum.LOGIN, GenerateLoginData() );
-        }
+        public Data GetLoginPaket() { return Data.CreateLogin( this.checkBox1.Checked ? LoginData.CreateLoginData( "XURI0", "123" ) : GenerateLoginData() ); }
 
         private LoginData GenerateLoginData() { return LoginData.CreateLoginData( this.userNameBox.Text, this.passwordBox.Text ); }
 

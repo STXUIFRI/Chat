@@ -45,7 +45,5 @@ namespace ChatLib {
         public static LoginData CreateRegisterData(string userName, string password, int age, GenderTypes gender) => new LoginData( userName, password, age, gender );
 
         public static LoginData CreateLoginData(string userName, string password) => new LoginData( userName, password );
-
-        public static LoginData OnlyUserName(string name) { return new LoginData( name ){Password = "" , Age =  0, Gender =  0}; }
     }
 }

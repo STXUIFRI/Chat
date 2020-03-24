@@ -68,7 +68,7 @@ namespace ChatServer {
                                     msList.Add( mn );
                                 }
 
-                                reData = new Data( Data.ActionEnum.SUCCEED_GET_LAST_MESSAGES,  msList.ToArray() );
+                                //reData = new Data( Data.ActionEnum.SUCCEED_GET_LAST_MESSAGES,  msList.ToArray() );     TODO:
                             }
                             else {
                                 reData = new Data( Data.ActionEnum.ERROR_GET_LAST_MESSAGES, "" );
@@ -84,7 +84,7 @@ namespace ChatServer {
                                 chList.Add( ch );
                             }
 
-                            reData = new Data( Data.ActionEnum.SUCCEED_GET_LAST_CHATS, chList.ToArray()  );
+                            //reData = new Data( Data.ActionEnum.SUCCEED_GET_LAST_CHATS, chList.ToArray()  );       TODO
                             break;
                         case Data.ActionEnum.GET_CHAT_INFO:
                             reData = new Data( Data.ActionEnum.SUCCEED_GET_CHAT_INFO );
