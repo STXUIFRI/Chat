@@ -1,23 +1,24 @@
-package apiSharpServer.data;
+package tests;
 
+import com.mysql.cj.xdevapi.JsonArray;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 
-public class Login {
+public class LoginTest {
     String name;
     String password;
     int male;
     int age;
 
-    public Login(String name, String password, int male, int age) {
+    public LoginTest(String name, String password, int male, int age) {
         this.name = name;
         this.password = password;
         this.male = male;
         this.age = age;
     }
 
-    public Login() {
+    public LoginTest() {
     }
 
     public void readFromHashMap(HashMap<String, Object> in){
@@ -32,6 +33,15 @@ public class Login {
         setPassword(in.getString("password"));
         setMale(in.getInt("male"));
         setAge(in.getInt("age"));
+    }
+
+    public JSONObject packToJson(){
+        JSONObject o = new JSONObject();
+        o.put("name",name);
+        o.put("password",password);
+        o.put("male",male);
+        o.put("age",age);
+        return o;
     }
 
     public String getName() {

@@ -1,37 +1,73 @@
-package apiSharpServer.data;
+package tests;
 
 import apiSharpServer.ActionEnum;
-import com.mysql.cj.xdevapi.JsonArray;
+import apiSharpServer.data.Chat;
+import apiSharpServer.data.Login;
+import apiSharpServer.data.Message;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Data {
+public class DataTest {
     public int action;
     public Message[] messages;
-    public Login login;
+    public LoginTest login;
     public String token;
     public Chat[] chats;
     public String errorMessage = null;
 
-    public Data(int action) {
+    public DataTest(int action) {
         this.action = action;
     }
 
-    public Data(int action, Message[] message, Login login, String token) {
+    public DataTest(int action, Message[] message, LoginTest login, String token) {
         this.action = action;
         this.messages = message;
         this.login = login;
         this.token = token;
     }
 
-    public Data(int action, Chat[] chats) {
+    public DataTest(int action, Message[] messages, String token) {
+        this.action = action;
+        this.messages = messages;
+        this.token = token;
+    }
+
+    public DataTest(int action, Chat[] chats) {
         this.action = action;
         this.chats = chats;
     }
 
-    public Data() {
+    public DataTest(int action, LoginTest login, String token) {
+        this.action = action;
+        this.login = login;
+        this.token = token;
     }
+
+    public DataTest(int action, Message[] messages, LoginTest login, String token, Chat[] chats) {
+        this.action = action;
+        this.messages = messages;
+        this.login = login;
+        this.token = token;
+        this.chats = chats;
+    }
+
+    public DataTest(int action, String token) {
+        this.action = action;
+        this.token = token;
+    }
+
+    public DataTest(int action, Message[] messages) {
+        this.action = action;
+        this.messages = messages;
+    }
+
+
+
+    public DataTest() {
+    }
+
+
 
     public void readFromJson(JSONObject in) {
         try {
@@ -41,7 +77,7 @@ public class Data {
 
             if ((action == ActionEnum.LOGIN.getI() || action == ActionEnum.REGISTER.getI() || action == ActionEnum.ADD_TO_CHAT.getI()) && in.get("login") != null) {
                 JSONObject t = (JSONObject) in.get("login");
-                Login l = new Login();
+                LoginTest l = new LoginTest();
                 l.readFromJson(t);
                 setLogin(l);
             }
@@ -74,8 +110,8 @@ public class Data {
         JSONObject out = new JSONObject();
 
         if (action == ActionEnum.LOGIN.getI() || action == ActionEnum.REGISTER.getI()) {
-            out.put("login", login);
-        } else if (action == ActionEnum.SUCCEED_GET_LAST_MESSAGES.getI()) {
+            out.put("login", login.packToJson());
+        } else if (action == ActionEnum.SUCCEED_GET_LAST_MESSAGES.getI()||action == ActionEnum.SEND_MESSAGE.getI()) { //Debug send message muss removed werden
             out.put("messages", messages);
         } else if (action == ActionEnum.SUCCEED_GET_LAST_CHATS.getI() || action == ActionEnum.CREATE_CHAT.getI()) {
             out.put("chats", chats);
@@ -122,11 +158,11 @@ public class Data {
         this.action = action;
     }
 
-    public Login getLogin() {
+    public LoginTest getLogin() {
         return login;
     }
 
-    public void setLogin(Login login) {
+    public void setLogin(LoginTest login) {
         this.login = login;
     }
 

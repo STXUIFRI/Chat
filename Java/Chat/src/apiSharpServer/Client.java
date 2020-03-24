@@ -7,10 +7,14 @@ import apiSharpServer.data.Login;
 import apiSharpServer.data.Message;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Client {
     private Socket connect;
@@ -45,44 +49,42 @@ public class Client {
     public void listener() throws IOException, InterruptedException {
         if (in.available() != 0) {
             try {
-                //System.out.printf("Listener started for %s%n", tokenName);
-
-                StringBuilder stringIn = new StringBuilder();
                 Data receive = new Data();
+                String stringIn = readLine(in);
 
-                while (in.available() > 0) {
-                    char c = (char) in.readByte();
-                    if (c == '\n')
-                        break;
-                    stringIn.append(c);
+                System.out.printf("Received: %s%n",stringIn);
+                receive.readFromJson(new JSONObject(stringIn));
 
+                if (security.check(receive, connectionDB, tokenName)) {
+
+                    int action = receive.getAction();
+                    if (action == ActionEnum.ERROR.getI()) {
+                        out.write(receive.packToJson().toString().getBytes());
+                    } else if (action == ActionEnum.REGISTER.getI()) {
+                        register(out, receive);
+                    } else if (action == ActionEnum.LOGIN.getI()) {
+                        login(out, receive);
+                    } else if (action == ActionEnum.GET_LAST_CHATS.getI()) {
+                        lastChats(out, receive);
+                    } else if (action == ActionEnum.CREATE_CHAT.getI()) {
+                        createChat(out, receive);
+                    } else if (action == ActionEnum.ADD_TO_CHAT.getI()) {
+                        addUserToGroup(out, receive);
+                    } else if (action == ActionEnum.GET_LAST_MESSAGES.getI()) {
+                        lastMessages(out, receive);
+                    } else if (action == ActionEnum.SEND_MESSAGE.getI()) {
+                        addMessage(out, receive);
+                    }
+                }else{
+                    Data d = new Data(ActionEnum.ERROR.getI());
+                    d.setErrorMessage("Access Denied.");
+                    out.write(d.packToJson().toString().getBytes());
+                    System.err.println("Untrusted access!");
                 }
-
-
-                System.out.println(stringIn);
-                receive.readFromJson(new JSONObject(stringIn.toString()));
-
-            security.check(receive, connectionDB);
-
-            int action = receive.getAction();
-            if (action == ActionEnum.REGISTER.getI()) {
-                register(out, receive);
-            } else if (action == ActionEnum.LOGIN.getI()) {
-                login(out, receive);
-            } else if (action == ActionEnum.GET_LAST_CHATS.getI()) {
-                lastChats(out, receive);
-            } else if (action == ActionEnum.CREATE_CHAT.getI()) {
-                createChat(out, receive);
-            } else if (action == ActionEnum.ADD_TO_CHAT.getI()) {
-                addUserToGroup(out, receive);
-            } else if (action == ActionEnum.GET_LAST_MESSAGES.getI()) {
-                lastMessages(out, receive);
-            } else if (action == ActionEnum.SEND_MESSAGE.getI()) {
-                addMessage(out, receive);
-            }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
+
         }
     }
 
@@ -141,6 +143,21 @@ public class Client {
         } else {
             out.write(new Data(ActionEnum.ERROR_REGISTER.getI(), null, null, null).packToJson().toString().getBytes());
         }
+    }
+
+    public  String readLine(DataInputStream in) throws IOException {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        while (true) {
+            int b = in.read();
+            if (b < 0) {
+                throw new IOException("Data truncated");
+            }
+            if (b == 0x0A) {
+                break;
+            }
+            buffer.write(b);
+        }
+        return new String(buffer.toByteArray(), "UTF-8");
     }
 
     private void sendConnectionPacket() throws IOException {

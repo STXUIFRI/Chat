@@ -48,7 +48,7 @@ public class Main {
     private String genID() {
         Random r = new Random();
         StringBuilder salt = new StringBuilder();
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 50; i++) {
             salt.append((char) (r.nextInt(87) + 36));
         }
         return salt.toString();
@@ -72,7 +72,7 @@ public class Main {
                     }
                 }
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(1);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

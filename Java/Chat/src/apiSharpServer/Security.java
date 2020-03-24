@@ -11,53 +11,69 @@ import java.util.Random;
 public class Security {
     private Data data;
     private Connection con;
+    private String token;
 
     public Security() {
 
     }
 
-    public void check(Data data, Connection con) {
+    public boolean check(Data data, Connection con, String token) {
         this.data = data;
         this.con = con;
+        this.token = token;
+        if (data.getLogin() != null) {
+            hashPassword();
+            return true;
+        } else if (checkToken()) {
+            return true;
+        }
+        return false;
 
-        hashPassword();
+    }
+
+    private boolean checkToken() {
+        if (!token.equals(data.getToken())) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public void hashPassword() {
         try {
-            if (data.getLogin() != null) {
-                String pass = data.getLogin().getPassword();
-                String salt;
 
-                if(data.getAction() == ActionEnum.REGISTER.getI()){
-                    salt = saltGen();
-                    pass+=salt;
-                }else{
-                    String encrypedPass = con.getPasswordByUserID(data.getLogin().getName());
-                    if(encrypedPass != null){
-                        salt = encrypedPass.substring(encrypedPass.length()-8);
-                        pass+=salt;
-                    }else {
-                        return;
-                    }
+            String pass = data.getLogin().getPassword();
+            String salt;
+
+            if (data.getAction() == ActionEnum.REGISTER.getI()) {
+                salt = saltGen();
+                pass += salt;
+            } else {
+                String encrypedPass = con.getPasswordByUserID(data.getLogin().getName());
+                if (encrypedPass != null) {
+                    salt = encrypedPass.substring(encrypedPass.length() - 8);
+                    pass += salt;
+                } else {
+                    return;
                 }
-                System.out.println(salt);
-                MessageDigest digest = null;
-                digest = MessageDigest.getInstance("SHA-256");
-                byte[] encodedhash = digest.digest(pass.getBytes(StandardCharsets.UTF_8));
-
-                data.getLogin().setPassword(bytesToHex(encodedhash)+salt);
             }
+            System.out.println(salt);
+            MessageDigest digest = null;
+            digest = MessageDigest.getInstance("SHA-256");
+            byte[] encodedhash = digest.digest(pass.getBytes(StandardCharsets.UTF_8));
+
+            data.getLogin().setPassword(bytesToHex(encodedhash) + salt);
+
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
     }
 
-    private String saltGen(){
+    private String saltGen() {
         Random r = new Random();
         StringBuilder salt = new StringBuilder();
         for (int i = 0; i < 8; i++) {
-            salt.append((char)(r.nextInt(87)+36));
+            salt.append((char) (r.nextInt(87) + 36));
         }
         return salt.toString();
     }

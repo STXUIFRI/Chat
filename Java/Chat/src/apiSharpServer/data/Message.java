@@ -5,14 +5,14 @@ import org.json.JSONObject;
 public class Message {
     private String text;
     private String date;
-    private int sender;
+    private String sender;
     private int chat;
     private int flags;
 
     public Message() {
     }
 
-    public Message(String text, String date, int sender, int chat, int flags) {
+    public Message(String text, String date,String sender ,int chat, int flags) {
         this.text = text;
         this.date = date;
         this.sender = sender;
@@ -22,9 +22,17 @@ public class Message {
 
     public void readFromJson(JSONObject in){
         setText(in.getString("text"));
-        setSender(in.getInt("sender"));
+        //setSender(in.getString("sender"));
         setChat(in.getInt("chat"));
         setFlags(in.getInt("flags"));
+    }
+
+    public String getSender() {
+        return sender;
+    }
+
+    public void setSender(String sender) {
+        this.sender = sender;
     }
 
     public String getDate() {
@@ -43,13 +51,6 @@ public class Message {
         this.text = text;
     }
 
-    public int getSender() {
-        return sender;
-    }
-
-    public void setSender(int sender) {
-        this.sender = sender;
-    }
 
     public int getChat() {
         return chat;
