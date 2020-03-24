@@ -6,12 +6,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.swing.*;
+
 public class Data {
     public int action;
     public Message[] messages;
     public Login login;
     public String token;
     public Chat[] chats;
+    public Invite[] invites;
     public String errorMessage = null;
 
     public Data(int action) {
@@ -39,7 +42,7 @@ public class Data {
             setToken(in.getString("token"));
 
 
-            if ((action == ActionEnum.LOGIN.getI() || action == ActionEnum.REGISTER.getI() || action == ActionEnum.ADD_TO_CHAT.getI()) && in.get("login") != null) {
+            if ((action == ActionEnum.LOGIN.getI() || action == ActionEnum.REGISTER.getI()&& in.get("login") != null)) {
                 JSONObject t = (JSONObject) in.get("login");
                 Login l = new Login();
                 l.readFromJson(t);
@@ -55,13 +58,22 @@ public class Data {
                     messages[i] = newMessage;
                 }
             }
-            if ((action == ActionEnum.GET_LAST_MESSAGES.getI() || action == ActionEnum.CREATE_CHAT.getI() || action == ActionEnum.ADD_TO_CHAT.getI()) && in.get("chats") != null) {
+            if ((action == ActionEnum.GET_LAST_MESSAGES.getI() || action == ActionEnum.CREATE_CHAT.getI()) && in.get("chats") != null) {
                 JSONArray array = in.getJSONArray("chats");
                 chats = new Chat[array.length()];
                 for (int i = 0; i < array.length(); i++) {
                     Chat newChat = new Chat();
                     newChat.readFromJson(array.getJSONObject(i));
                     chats[i] = newChat;
+                }
+            }
+            if((action == ActionEnum.ADD_TO_CHAT.getI())&&in.get("invites") != null){
+                JSONArray array = in.getJSONArray("invites");
+                invites = new Invite[array.length()];
+                for (int i = 0; i < array.length(); i++) {
+                    Invite newIN = new Invite();
+                    newIN.readFromJson(array.getJSONObject(i));
+                    invites[i] = newIN;
                 }
             }
         } catch (JSONException e) {
@@ -79,6 +91,8 @@ public class Data {
             out.put("messages", messages);
         } else if (action == ActionEnum.SUCCEED_GET_LAST_CHATS.getI() || action == ActionEnum.CREATE_CHAT.getI()) {
             out.put("chats", chats);
+        }else if(action == ActionEnum.SUCCEED_GET_INVITES.getI()){
+            out.put("invites",invites);
         }
 
         if(errorMessage != null){
@@ -88,6 +102,14 @@ public class Data {
         out.put("token", token);
 
         return out;
+    }
+
+    public Invite[] getInvites() {
+        return invites;
+    }
+
+    public void setInvites(Invite[] invites) {
+        this.invites = invites;
     }
 
     public String getErrorMessage() {

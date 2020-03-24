@@ -1,10 +1,7 @@
 package apiSharpServer;
 
 import SqlConnection.Connection;
-import apiSharpServer.data.Chat;
-import apiSharpServer.data.Data;
-import apiSharpServer.data.Login;
-import apiSharpServer.data.Message;
+import apiSharpServer.data.*;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -68,12 +65,22 @@ public class Client {
                         lastChats(out, receive);
                     } else if (action == ActionEnum.CREATE_CHAT.getI()) {
                         createChat(out, receive);
-                    } else if (action == ActionEnum.ADD_TO_CHAT.getI()) {
-                        addUserToGroup(out, receive);
                     } else if (action == ActionEnum.GET_LAST_MESSAGES.getI()) {
                         lastMessages(out, receive);
                     } else if (action == ActionEnum.SEND_MESSAGE.getI()) {
                         addMessage(out, receive);
+                    }else if(action == ActionEnum.GET_INVITES.getI()){
+                        Data d = new Data(ActionEnum.SUCCEED_GET_INVITES.getI());
+                        d.setInvites(connectionDB.getAllInvites(ID));
+                        out.write(d.packToJson().toString().getBytes());
+                    }else if(action == ActionEnum.ADD_TO_CHAT.getI()){
+                        Invite i =receive.getInvites()[0];
+                        if(connectionDB.addInvite(ID,i.getReceiver(),i.getChatID(),i.getText())){
+                            out.write(new Data(ActionEnum.SUCCEED_ADD_TO_CHAT.getI()).packToJson().toString().getBytes());
+                        }else{
+                            out.write(new Data(ActionEnum.ERROR_ADD_TO_CHAT.getI()).packToJson().toString().getBytes());
+
+                        }
                     }
                 }else{
                     Data d = new Data(ActionEnum.ERROR.getI());

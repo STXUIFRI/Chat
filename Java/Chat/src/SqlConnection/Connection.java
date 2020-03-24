@@ -1,6 +1,7 @@
 package SqlConnection;
 
 import apiSharpServer.data.Chat;
+import apiSharpServer.data.Invite;
 import apiSharpServer.data.Message;
 
 import java.sql.*;
@@ -32,7 +33,7 @@ public class Connection {
     public boolean registerUser(String user, String password, int male, int age) {
         try {
             if (testregister(user)) {
-                sendDBRequest("INSERT INTO user (name, password,male,age) VAlUES (?,?,?,?)",4,false,user,password,male,age);
+                sendDBRequest("INSERT INTO user (name, password,male,age) VAlUES (?,?,?,?)", 4, false, user, password, male, age);
 //                String sql = String.format("INSERT INTO user (name, password,male,age) VAlUES ('%s','%s',%s,%s)", user, password, male, age);
 //                stmt.executeUpdate(sql);
                 return true;
@@ -52,7 +53,7 @@ public class Connection {
      * @throws SQLException
      */
     private boolean testregister(String user) throws SQLException {
-        ResultSet get = sendDBRequest("Select * from user where name=?",1,true,user);
+        ResultSet get = sendDBRequest("Select * from user where name=?", 1, true, user);
 //        String sql = String.format("Select * from user where name='%s'", user);
 //        ResultSet get = stmt.executeQuery(sql);
         //IDK iod Woks
@@ -63,17 +64,17 @@ public class Connection {
         return true;
     }
 
-    private ResultSet sendDBRequest(String command, int argumentCounter,boolean query, Object... args) {
+    private ResultSet sendDBRequest(String command, int argumentCounter, boolean query, Object... args) {
         try {
             pSmtmt = con.prepareStatement(command);
 
             for (int i = 0; i < argumentCounter; i++) {
 
-                pSmtmt.setObject(i+1,args[i]);
+                pSmtmt.setObject(i + 1, args[i]);
             }
-            if(query) {
+            if (query) {
                 return pSmtmt.executeQuery();
-            }else{
+            } else {
                 pSmtmt.executeUpdate();
                 return null;
             }
@@ -109,9 +110,9 @@ public class Connection {
 //            String sql = String.format("INSERT INTO chats (creator, title) VAlUES (%s,'%s')", creator, title);
 //            System.out.println(sql);
 //            stmt.executeUpdate(sql);
-            sendDBRequest("INSERT INTO chats (creator, title) VAlUES (?,?)",2,false,creator,title);
-            // LocalDateTime now = LocalDateTime.now();
-            sendDBRequest("INSERT INTO relation (relation.user,relation.group,flags) VAlUES (?,LAST_INSERT_ID(),?)",2,false,creator,flags);
+        sendDBRequest("INSERT INTO chats (creator, title) VAlUES (?,?)", 2, false, creator, title);
+        // LocalDateTime now = LocalDateTime.now();
+        sendDBRequest("INSERT INTO relation (relation.user,relation.group,flags) VAlUES (?,LAST_INSERT_ID(),?)", 2, false, creator, flags);
 //            String sql = String.format("INSERT INTO relation (relation.user,relation.group,flags) VAlUES ('%s',LAST_INSERT_ID(),%s)", creator, flags);
 //            stmt.executeUpdate(sql);
 
@@ -119,7 +120,7 @@ public class Connection {
 
     public Chat[] getAllChats(int user) {
         try {
-            ResultSet res =  sendDBRequest("SELECT  idchats,creator,title,chats.flags from relation, chats where relation.user=? AND chats.idchats = relation.group",1,true,user);
+            ResultSet res = sendDBRequest("SELECT  idchats,creator,title,chats.flags from relation, chats where relation.user=? AND chats.idchats = relation.group", 1, true, user);
 //            String sql = String.format("SELECT  idchats,creator,title,chats.flags from relation, chats where relation.user='%s' AND chats.idchats = relation.group", user);
 //            ResultSet res = stmt.executeQuery(sql);
 
@@ -152,13 +153,13 @@ public class Connection {
         try {
             int user = getUserID(userName);
 
-            ResultSet res = sendDBRequest("SELECT * from relation where relation.user=? AND relation.group=? AND flags=?",3,true,user,chat,flag);
+            ResultSet res = sendDBRequest("SELECT * from relation where relation.user=? AND relation.group=? AND flags=?", 3, true, user, chat, flag);
 //            String sql = String.format("SELECT * from relation where relation.user=%s AND relation.group=%S AND flags=%s", user, chat, flag);
 //            ResultSet res = stmt.executeQuery(sql);
             if (res.next())
                 return false;
 
-            sendDBRequest("INSERT INTO relation (relation.user, relation.group,flags) VAlUES (?,?,?)",3,false,user,chat,flag);
+            sendDBRequest("INSERT INTO relation (relation.user, relation.group,flags) VAlUES (?,?,?)", 3, false, user, chat, flag);
 //            sql = String.format("INSERT INTO relation (relation.user, relation.group,flags) VAlUES (%s,%s,%s)", user, chat, flag);
 //            stmt.executeUpdate(sql);
             return true;
@@ -170,7 +171,7 @@ public class Connection {
 
     public Message[] getAllMessages(int chat) {
         try {
-            ResultSet res = sendDBRequest("Select messages.*, user.name FROM messages,user where user.iduser = messages.sender AND messages.chat = ?",1,true,chat);
+            ResultSet res = sendDBRequest("Select messages.*, user.name FROM messages,user where user.iduser = messages.sender AND messages.chat = ?", 1, true, chat);
 //            String sql = String.format("Select messages.*, user.name FROM messages,user where user.iduser = messages.sender AND messages.chat = %s", chat);
 //            ResultSet res = stmt.executeQuery(sql); //TODO java.sql.SQLException: Illegal operation on empty result set.
 
@@ -200,9 +201,61 @@ public class Connection {
     }
 
     public void addMessage(String text, int chat, int sender, int flags) {
-            sendDBRequest("INSERT INTO messages (text,chat,sender,date,flags) VALUES(?,?,?,?,?)",5,false,text,chat,sender,getDate(),flags);
-//            String sql = String.format("INSERT INTO messages (text,chat,sender,date,flags) VALUES('%s',%s,%s,'%s',%s)", text, chat, sender, getDate(), flags);
-//            stmt.executeUpdate(sql);
+        sendDBRequest("INSERT INTO messages (text,chat,sender,date,flags) VALUES(?,?,?,?,?)", 5, false, text, chat, sender, getDate(), flags);
+
+    }
+
+    public Invite[] getAllInvites(int user) {
+        try {
+            ResultSet re = sendDBRequest("SELECT invites.message,idinvites,chats.title,user.name from invites, chats, user where invites.receiver = ? AND chats.idchats  = invites.chat AND user.iduser = invites.sender", 1, true, user);
+            int size = 0;
+            if (re != null) {
+                re.last();
+                size = re.getRow();
+            }
+
+            re.first();
+            Invite[] iOut = new Invite[size];
+
+            for (int i = 0; i < size; i++) {
+                Invite newI = new Invite();
+
+                newI.setInviteID(re.getInt("idinvites"));
+                newI.setChat(re.getString("title"));
+                newI.setSender(re.getString("name"));
+
+                newI.setText(re.getString("message"));
+                iOut[i] = newI;
+            }
+
+            return iOut;
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public boolean addInvite(int sender, String receiver, int chat, String message) {
+        try {
+            int reUser = getUserID(receiver);
+            if(testInvite(sender,reUser,chat)){
+                sendDBRequest("INSERT INTO invites (sender,receiver,chat,message) VALUE (?,?,?,?)", 4, false,sender,reUser,chat,message );
+                return true;
+            }else{
+                return false;
+            }
+            } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private boolean testInvite(int sender,int receiver,int chat) throws SQLException {
+        ResultSet re = sendDBRequest("SELECT * from invites where sender = ? AND receiver = ? AND chat = ?", 3, true, sender, receiver, chat);
+        if(!re.next()) {
+            return true;
+        }
+        return false;
     }
 
     private String getDate() {
@@ -212,10 +265,10 @@ public class Connection {
     }
 
     public int getUserID(String user) throws SQLException {
-        ResultSet rs = sendDBRequest("Select iduser from user where name = ?",1,true,user);
+        ResultSet rs = sendDBRequest("Select iduser from user where name = ?", 1, true, user);
 //        String sql = String.format("Select iduser from user where name = '%s'", user); //TODO java.sql.SQLException: Illegal operation on empty result set.
 //        ResultSet rs = stmt.executeQuery(sql);
-        if(!rs.next()){
+        if (!rs.next()) {
             return -1;
         }
 
@@ -224,11 +277,11 @@ public class Connection {
 
     public String getPasswordByUserID(String user) {
         try {
-            ResultSet res =sendDBRequest("SELECT password from user where name=?",1,true,user);
+            ResultSet res = sendDBRequest("SELECT password from user where name=?", 1, true, user);
 //            String sql = String.format("SELECT password from user where name='%s'", user);
 //            ResultSet res = stmt.executeQuery(sql);
 
-            if(!res.next()){
+            if (!res.next()) {
                 return null;
             }
             return res.getString("password");
