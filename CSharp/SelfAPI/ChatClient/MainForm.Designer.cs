@@ -99,6 +99,7 @@
             this.Controls.Add(this.loginForm1);
             this.Controls.Add(this.chatView1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.MinimumSize = new System.Drawing.Size(300, 400);
             this.Name = "MainForm";
             this.Text = "ChatApi";
             this.ResumeLayout(false);

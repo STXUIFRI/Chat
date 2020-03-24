@@ -24,6 +24,10 @@ namespace ChatLib {
         [field: JsonIgnore]
         public string Token { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
+        [JsonProperty( "Error" )]
+        [field: JsonIgnore]
+        public string Error { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
+
 
         public Data() { }
 
@@ -81,10 +85,10 @@ namespace ChatLib {
         #endregion
 
         public static Data CreateInvite(ChatInfo    chatToInvite, LoginData reqUser) { return new Data( ActionEnum.ADD_TO_CHAT, reqUser, null, new[] { chatToInvite } ); }
-        public static Data CreateChat(ChatInfo      chatToCreate) { return new Data( ActionEnum.CREATE_CHAT,    new[] { chatToCreate } ); }
+        public static Data CreateChat(ChatInfo      chatToCreate) { return new Data( ActionEnum.CREATE_CHAT,       new[] { chatToCreate } ); }
         public static Data GetLastMessages(ChatInfo chatSelector) { return new Data( ActionEnum.GET_LAST_MESSAGES, new[] { chatSelector } ); }
-        public static Data SendMessage(Message      msg)          { return new Data( ActionEnum.SEND_MESSAGE,   new[] { msg } ); }
-        public static Data CreateLogin(LoginData    loginData)    { return new Data( ActionEnum.LOGIN,          loginData ); }
-        public static Data CreateRegister(LoginData registerData) { return new Data( ActionEnum.REGISTER,       registerData ); }
+        public static Data SendMessage(Message      msg)          { return new Data( ActionEnum.SEND_MESSAGE,      new[] { msg } ); }
+        public static Data CreateLogin(LoginData    loginData)    { return new Data( ActionEnum.LOGIN,             loginData ); }
+        public static Data CreateRegister(LoginData registerData) { return new Data( ActionEnum.REGISTER,          registerData ); }
     }
 }

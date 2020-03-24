@@ -13,12 +13,17 @@ using ChatLib;
 namespace ServerTest {
     class Program {
         private const int TOSEND_MESSAGES_I    = 250;
-        private const int CLIENTTS_TO_STARTR_I = 10;      
-        const int TOTAL = ( TOSEND_MESSAGES_I * CLIENTTS_TO_STARTR_I + CLIENTTS_TO_STARTR_I );
+        private const int CLIENTTS_TO_STARTR_I = 5;
+        const         int TOTAL                = ( TOSEND_MESSAGES_I * CLIENTTS_TO_STARTR_I + CLIENTTS_TO_STARTR_I );
 
         static void Main(string[] args) {
             StaticTcpClientOpperations.SLEEP_BETWEEN_SENDS = 10;
-            new Program();
+
+            try {
+                new Program();
+            } catch (Exception e) {
+                Console.WriteLine( e.Message );
+            }
         }
 
         static List<Thread> _threads = new List<Thread>();
@@ -68,19 +73,34 @@ namespace ServerTest {
             //    Thread.Sleep( 1000 );
             //}
 
-            for ( int i = 0; i < TOSEND_MESSAGES_I; i++ ) {
-                ChatClientController _controller = new ChatClientController();
-                _controller.SQLINJECTIONTEST = false;
-                _controller.StartClient( new IPEndPoint( IPAddress.Parse( "25.67.179.166" ), 6969 ), Callback );
-                _controller.ToUI        += ControllerOnToUI;
-                _controller.ToUIOnError += ControllerOnToUIOnError;
-                ChatLib.LoginData loginData = LoginData.CreateLoginData( "XURI" + new Random().Next(), "123" );
-                _controller.PaketQueue.Enqueue( Data.CreateRegister( loginData ) );
-                _controller.PaketQueue.Enqueue( Data.CreateLogin( loginData ) );
-                _controller.PaketQueue.Enqueue( Data.SendMessage( new Message( DateTime.Now + ": " +1000, 0, 1, 0 ) ) );
-                Thread.Sleep( 1000 );
-                _controller.Running = false;
-            }
+            var sqlInj1 = "hi' OR 'hi' = ";
+            var sqlInj2 = " OR 'hi' = 'hi";
+
+            ChatClientController _controller = new ChatClientController();
+            _controller.SQLINJECTIONTEST = false;
+            _controller.StartClient( new IPEndPoint( IPAddress.Parse( "25.67.179.166" ), 6969 ), Callback );
+            _controller.ToUI        += ControllerOnToUI;
+            _controller.ToUIOnError += ControllerOnToUIOnError;
+            ChatLib.LoginData loginData = LoginData.CreateLoginData( sqlInj1, sqlInj2 );
+            _controller.PaketQueue.Enqueue( Data.CreateLogin( loginData ) );
+            Thread.Sleep( 2000 );
+            _controller.PaketQueue.Enqueue( Data.SendMessage( new Message("tewst ", 1) ) );
+
+
+            //ChatClientController _controller = new ChatClientController();
+            //_controller.SQLINJECTIONTEST = false;
+            //_controller.StartClient( new IPEndPoint( IPAddress.Parse( "25.67.179.166" ), 6969 ), Callback );
+            //_controller.ToUI        += ControllerOnToUI;
+            //_controller.ToUIOnError += ControllerOnToUIOnError;                                           
+            //ChatLib.LoginData loginData = LoginData.CreateLoginData( "XURI" + new Random().Next(), "123" );
+            //_controller.PaketQueue.Enqueue( Data.CreateRegister( loginData ) );
+            //_controller.PaketQueue.Enqueue( Data.CreateLogin( loginData ) );
+            //for ( int i = 0; i < TOSEND_MESSAGES_I; i++ ) {
+            //    _controller.PaketQueue.Enqueue( Data.SendMessage( new Message( DateTime.Now + ": " + 1000, 0, 1, 0 ) ) );
+            //    //_controller.PaketQueue.Enqueue( new Data(Data.ActionEnum.SEND_MESSAGE));
+            //    Thread.Sleep( 10 );
+            //    //_controller.Running = false;
+            //}
 
             //for ( int z = 0; z < CLIENTTS_TO_STARTR_I; z++ ) {
             //    var t = new Thread( () => {
@@ -94,10 +114,11 @@ namespace ServerTest {
             //        _controller.PaketQueue.Enqueue( Data.CreateRegister( loginData ) );
             //        _controller.PaketQueue.Enqueue( Data.CreateLogin( loginData ) );
             //        var r = new Random();
-            //
+            //        Thread.Sleep( 3000 );
+            //        Thread.Sleep( new Random().Next(1000, 2000 ) );
             //        for ( int i = 0; i < TOSEND_MESSAGES_I; i++ ) {
-            //            _controller.PaketQueue.Enqueue( Data.SendMessage( new Message( DateTime.Now + ": " + r.Next(), 0, 1, 0 ) ) );
-            //            //Thread.Sleep( 300 );
+            //            _controller.PaketQueue.Enqueue( Data.SendMessage( new Message( DateTime.Now + ": " + r.Next(),  1 ) ) );
+            //            Thread.Sleep( 500 );
             //        }
             //
             //        //for ( int i = 0; i < 10; i++ ) {
@@ -109,18 +130,18 @@ namespace ServerTest {
             //    t.Start();
             //}
 
-            Thread.Sleep( 1000 );
-
-            while ( true ) {
-                co:
-
-                foreach ( var thread in _threads ) {
-                    if ( thread.IsAlive ) goto co;
-                }
-
-                break;
-            }
-                                                                                                                                           
+            //Thread.Sleep( 1000 );
+            //
+            //while ( true ) {
+            //    co:
+            //
+            //    foreach ( var thread in _threads ) {
+            //        if ( thread.IsAlive ) goto co;
+            //    }
+            //
+            //    break;
+            //}
+            //
             Console.WriteLine( "Lost: "  + ( TOTAL - this.infos ) );
             Console.WriteLine( "total: " + TOTAL );
 
@@ -135,6 +156,11 @@ namespace ServerTest {
         private void ControllerOnToUIOnError(Data obj) {
             Console.ForegroundColor = ConsoleColor.DarkRed;
             Console.WriteLine( obj.Action );
+
+            try {
+                Console.WriteLine( obj.Error );
+            } catch { }
+
             Console.ResetColor();
             this.errors++;
             settitel();
@@ -144,6 +170,7 @@ namespace ServerTest {
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine( obj.Action );
             Console.ResetColor();
+
             this.infos++;
             settitel();
         }
@@ -156,6 +183,6 @@ namespace ServerTest {
             settitel();
         }
 
-        private void settitel() { Console.Title ="Total: "+TOTAL+ "  ERRORS: " + this.errors + "  MESSAGES: " + this.infos + "  CALLBACKS: " + this.callback ;  }
+        private void settitel() { Console.Title = "Total: " + TOTAL + "  ERRORS: " + this.errors + "  MESSAGES: " + this.infos + "  CALLBACKS: " + this.callback; }
     }
 }

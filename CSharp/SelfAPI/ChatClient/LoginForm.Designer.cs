@@ -44,6 +44,7 @@
             this.panel3 = new System.Windows.Forms.Panel();
             this.panel8 = new System.Windows.Forms.Panel();
             this.panel7 = new System.Windows.Forms.Panel();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -78,21 +79,25 @@
             this.userNameBox.Cursor = System.Windows.Forms.Cursors.Default;
             this.userNameBox.ForeColor = System.Drawing.Color.OrangeRed;
             this.userNameBox.Location = new System.Drawing.Point(6, 68);
+            this.userNameBox.MaxLength = 40;
             this.userNameBox.Name = "userNameBox";
             this.userNameBox.Size = new System.Drawing.Size(194, 35);
             this.userNameBox.TabIndex = 2;
             // 
             // passwordBox
             // 
+            this.passwordBox.AcceptsReturn = true;
             this.passwordBox.BackColor = System.Drawing.Color.DarkSlateBlue;
             this.passwordBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.passwordBox.Cursor = System.Windows.Forms.Cursors.Default;
             this.passwordBox.ForeColor = System.Drawing.Color.OrangeRed;
             this.passwordBox.Location = new System.Drawing.Point(6, 109);
+            this.passwordBox.MaxLength = 40;
             this.passwordBox.Name = "passwordBox";
             this.passwordBox.PasswordChar = '*';
             this.passwordBox.Size = new System.Drawing.Size(194, 35);
             this.passwordBox.TabIndex = 3;
+            this.passwordBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PasswordBox_KeyDown);
             // 
             // label3
             // 
@@ -199,6 +204,7 @@
             // 
             // panel8
             // 
+            this.panel8.Controls.Add(this.checkBox1);
             this.panel8.Controls.Add(this.passwordBox);
             this.panel8.Controls.Add(this.userNameBox);
             this.panel8.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -216,6 +222,18 @@
             this.panel7.Name = "panel7";
             this.panel7.Size = new System.Drawing.Size(177, 242);
             this.panel7.TabIndex = 0;
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Checked = true;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.Location = new System.Drawing.Point(6, 161);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(185, 33);
+            this.checkBox1.TabIndex = 2;
+            this.checkBox1.Text = "ADMIN Login";
+            this.checkBox1.UseVisualStyleBackColor = true;
             // 
             // LoginForm
             // 
@@ -261,5 +279,6 @@
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Panel panel8;
         private System.Windows.Forms.Panel panel7;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }

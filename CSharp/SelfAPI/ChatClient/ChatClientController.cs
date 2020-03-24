@@ -24,7 +24,8 @@ namespace ChatClient {
         private bool _running;
         public  bool SQLINJECTIONTEST = true;
 
-        public string MYTOKEN    { get; set; }
+        public string MYTOKEN { get; set; }
+
         //public int    MYID       => int.Parse( this.MYTOKEN ); //TODO: Ask For Real Id
         public string MYUSERNAME { get; set; }
 
@@ -44,8 +45,9 @@ namespace ChatClient {
                 this._running = value;
             }
         }
-        
+
         TcpClient cl = default;
+
         private async void RunClientDaemon(IPEndPoint ipE, Action<ConnectionState> callback) {
             this.Running = true;
 
@@ -162,6 +164,10 @@ namespace ChatClient {
                             finalSend = toSend.ToArray();
                         }
                         else {
+                            foreach ( var packet in packets ) {
+                                packet.Token = this.MYTOKEN;
+                            }
+
                             finalSend = packets;
                         }
 
@@ -229,10 +235,20 @@ namespace ChatClient {
                         break;
                     case Data.ActionEnum.SUCCEED:
                         Console.WriteLine( "succeed" );
+                        OnToUi( dataPacket );
                         break;
 
-                    case Data.ActionEnum.CONNECTED:
                     case Data.ActionEnum.SUCCEED_LOGIN:
+                        if ( dataPacket.Token != null ) {
+                            this.MYTOKEN = dataPacket.Token;
+                        }
+
+                        Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                        Console.WriteLine( "TOKEN SET" );
+                        Console.ResetColor();
+                        OnToUi( dataPacket );
+                        break;
+                    case Data.ActionEnum.CONNECTED:
                     case Data.ActionEnum.SUCCEED_REGISTER:
                     case Data.ActionEnum.SUCCEED_MESSAGE_SEND:
                     case Data.ActionEnum.SUCCEED_GET_LAST_MESSAGES:
@@ -252,6 +268,8 @@ namespace ChatClient {
                     case Data.ActionEnum.ERROR_GET_CHAT_INFO:
                     case Data.ActionEnum.ERROR_CREATE_CHAT:
                     case Data.ActionEnum.ERROR_ADD_TO_CHAT:
+                    case Data.ActionEnum.ERROR_SQL_INJECTION_DETECTED:
+                    case Data.ActionEnum.ERROR_CLIENT_CLOSED:
                         OnToUiOnError( dataPacket );
 
                         break;

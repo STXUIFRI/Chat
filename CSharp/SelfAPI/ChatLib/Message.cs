@@ -7,16 +7,15 @@ using Newtonsoft.Json;
 
 namespace ChatLib {
     public class Message {
-        public Message(string text, int sender, int chat) {
+        public Message(string text, int chat) {
             this.Text   = text;
-            this.Sender = sender;
             this.Chat   = chat;
             this.Flags  = 0;
         }
 
         public Message() { }
 
-        public Message(string text, int sender, int chat, int flags) {
+        public Message(string text, string sender, int chat, int flags) {
             this.Flags  = flags;
             this.Text   = text;
             this.Sender = sender;
@@ -30,7 +29,7 @@ namespace ChatLib {
 
         [JsonProperty( "sender" )]
         [field: JsonIgnore]
-        public int Sender { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
+        public string Sender { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
         [JsonProperty( "chat" )]
         [field: JsonIgnore]
@@ -39,5 +38,9 @@ namespace ChatLib {
         [JsonProperty( "flags" )]
         [field: JsonIgnore]
         public int Flags { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
+
+        [JsonProperty( "data" )]
+        [field: JsonIgnore]
+        public string Data { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
     }
 }

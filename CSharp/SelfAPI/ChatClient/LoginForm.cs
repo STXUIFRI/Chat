@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Policy;
 using System.Windows.Forms;
 using ChatLib;
 
@@ -9,9 +10,7 @@ namespace ChatClient {
         public void SetController(ChatClientController controller) { this._comptroller = controller; }
 
         public Data GetLoginPaket() {
-            //return new Data( Data.ActionEnum.LOGIN, LoginData.CreateLoginData("XURI0", "123") );
-            
-            return new Data( Data.ActionEnum.LOGIN, GenerateLoginData() );
+            return this.checkBox1.Checked ? new Data( Data.ActionEnum.LOGIN, LoginData.CreateLoginData( "XURI0", "123" ) ) : new Data( Data.ActionEnum.LOGIN, GenerateLoginData() );
         }
 
         private LoginData GenerateLoginData() { return LoginData.CreateLoginData( this.userNameBox.Text, this.passwordBox.Text ); }
@@ -23,6 +22,13 @@ namespace ChatClient {
 
             this.userNameBox.Text = loginP.Login.Name;
             this.passwordBox.Text = loginP.Login.Password;
+        }
+
+        private void PasswordBox_KeyDown(object sender, KeyEventArgs e) {
+            if ( e.KeyCode != Keys.Return ) return;
+
+            e.SuppressKeyPress = true;
+            Login_Click( sender, e );
         }
     }
 }

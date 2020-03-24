@@ -64,7 +64,7 @@ namespace ChatServer {
                                 var msList = new List<Message>();
 
                                 for ( int i = 0; i < max; i++ ) {
-                                    var mn = new Message( "Message number " + i, 10, r.NextDouble() > .5 ? chatID : 5 );
+                                    var mn = new Message( "Message number " + i, r.NextDouble() > .5 ? chatID : 5 );
                                     msList.Add( mn );
                                 }
 
