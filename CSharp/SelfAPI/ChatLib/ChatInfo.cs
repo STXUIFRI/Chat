@@ -7,12 +7,12 @@ using Newtonsoft.Json;
 namespace ChatLib {
     public class ChatInfo {
 
-        [JsonProperty( "cID" )]
+        [JsonProperty( "chatID" )]
         [field: JsonIgnore]
         public int ChatId { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 
 
-        [JsonProperty( "creator" )]
+        [JsonProperty( "creatorID" )]
         [field: JsonIgnore]
         public int Creator { [DebuggerStepThrough] get; [DebuggerStepThrough] set; }
 

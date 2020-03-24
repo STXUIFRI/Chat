@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Net;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using ChatLib;
 
@@ -29,14 +22,27 @@ namespace ChatClient {
             this.registerForm1.SetController( this._controller );
             this.chatView1.SetController( this._controller );
 
+            this.connectionForm1.OnConnectionStateUpdate += ConnectionForm1OnOnConnectionStateUpdate;
+
             this.loginForm1.RegisterButton.Click += (sender, args) => AimHelper( DialogPage.REGISTER_FORM, DialogPage.LOGIN_FORM );
             this.registerForm1.LoginButton.Click += (sender, args) => AimHelper( DialogPage.LOGIN_FORM,    DialogPage.REGISTER_FORM );
+        }
+
+        private void ConnectionForm1OnOnConnectionStateUpdate(ConnectionState obj) {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine( obj );
+            Console.ResetColor();
+
+            if ( obj == ConnectionState.Closed ) {
+                this.Invoke( new Action( () => AimHelper( DialogPage.CONNECTION_FORM, DialogPage.LOGIN_FORM ) ) );
+            }
         }
 
         private void ControllerOnToUIOnError(Data obj) {
             Console.ForegroundColor = ConsoleColor.DarkRed;
             Console.WriteLine( obj.Action );
             Console.ResetColor();
+            MessageBox.Show( obj.Action.ToString() );
         }
 
 
@@ -54,7 +60,8 @@ namespace ChatClient {
                         break;
                     }
                     case Data.ActionEnum.SUCCEED_LOGIN:
-                        this._controller.MYTOKEN = obj.Token;
+                        this._controller.MYTOKEN    = obj.Token;
+                        this._controller.MYUSERNAME = this.loginForm1.GetLoginPaket().Login.Name;
                         AimHelper( DialogPage.CHAT_VIEW, DialogPage.LOGIN_FORM );
                         break;
 
@@ -64,6 +71,8 @@ namespace ChatClient {
                     case Data.ActionEnum.SUCCEED_GET_CHAT_INFO:
                     case Data.ActionEnum.SUCCEED_CREATE_CHAT:
                     case Data.ActionEnum.SUCCEED_ADD_TO_CHAT:
+                    case Data.ActionEnum.SUCCEED_GET_INVITES:
+                    case Data.ActionEnum.SUCCEED_ACCEPT_INVITE:
                         this.chatView1.ChatUiUpdate( obj );
                         break;
                     default: break;
@@ -127,7 +136,7 @@ namespace ChatClient {
         private double starte = 1;
 
         private void AnimationTimer_Tick(object sender, EventArgs e) {
-            this.starte += this.animationTimer.Interval * this.starte;
+            this.starte += this.animationTimer.Interval * Math.Max( this.starte / 10, 1 );
 
             var std = (int) this.starte;
 
@@ -143,28 +152,31 @@ namespace ChatClient {
 
                 if ( this.toshowtype == DialogPage.CHAT_VIEW ) {
                     if ( this.Width < this.ChatSize.Width ) {
-                        this.Width += this.animationTimer.Interval * 20;
+                        this.Width += this.animationTimer.Interval * 2;
                         final      =  false;
                     }
 
                     if ( this.Height < this.ChatSize.Height ) {
-                        this.Height += this.animationTimer.Interval * 20;
+                        this.Height += this.animationTimer.Interval * 2;
                         final       =  false;
                     }
                 }
 
-                if ( final ) {
-                    this.tohide.Visible = false;
+                ChangeDialog( this.toshowtype );
 
+                if ( final ) {
                     this.toshow.Size     = this.ClientSize;
                     this.tohide.Size     = this.ClientSize;
                     this.toshow.Location = Point.Empty;
                     this.tohide.Location = Point.Empty;
 
-                    this.tohide.Dock = DockStyle.Fill;
-                    this.toshow.Dock = DockStyle.Fill;
-                    ChangeDialog( this.toshowtype );
-                    this.starte = 1;
+                    this.toshow.Enabled = true;
+                    this.tohide.Enabled = true;
+
+                    this.tohide.Visible = false;
+                    this.tohide.Dock    = DockStyle.Fill;
+                    this.toshow.Dock    = DockStyle.Fill;
+                    this.starte         = 1;
                     this.animationTimer.Stop();
                 }
                 else {
@@ -203,6 +215,8 @@ namespace ChatClient {
 
             this.tohide.BringToFront();
 
+            this.toshow.Enabled = false;
+            this.tohide.Enabled = false;
             this.tohide.Visible = true;
             this.toshow.Visible = true;
             this.tohide.Dock    = DockStyle.None;

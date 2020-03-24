@@ -83,6 +83,7 @@
             this.userNameBox.Cursor = System.Windows.Forms.Cursors.Default;
             this.userNameBox.ForeColor = System.Drawing.Color.OrangeRed;
             this.userNameBox.Location = new System.Drawing.Point(15, 39);
+            this.userNameBox.MaxLength = 40;
             this.userNameBox.Name = "userNameBox";
             this.userNameBox.Size = new System.Drawing.Size(188, 35);
             this.userNameBox.TabIndex = 2;
@@ -94,6 +95,7 @@
             this.passwordBox.Cursor = System.Windows.Forms.Cursors.Default;
             this.passwordBox.ForeColor = System.Drawing.Color.OrangeRed;
             this.passwordBox.Location = new System.Drawing.Point(15, 80);
+            this.passwordBox.MaxLength = 40;
             this.passwordBox.Name = "passwordBox";
             this.passwordBox.PasswordChar = '*';
             this.passwordBox.Size = new System.Drawing.Size(188, 35);

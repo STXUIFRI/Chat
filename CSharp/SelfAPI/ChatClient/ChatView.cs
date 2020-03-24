@@ -1,10 +1,13 @@
 ﻿#region using
 
 using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Media;
 using System.Windows.Forms;
 using ChatLib;
 using Message = ChatLib.Message;
-using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -12,14 +15,27 @@ namespace ChatClient {
     public partial class ChatView : UserControl {
         private ChatClientController _comptroller;
 
+        private int    _currentChat     = -1;
+        private string _currentChatName = "Welcome Chanel";
+
         public ChatView() { InitializeComponent(); }
 
         public void SetController(ChatClientController comptroller) { this._comptroller = comptroller; }
         public void ChatUiUpdate(Data                  packet)      { Invoke( new Action( delegate { ChatUiUpdateInternal( packet ); } ) ); }
 
-        private void ChatView_Load(object sender, EventArgs e) { }
+        private void ChatView_Load(object sender, EventArgs e) {
+            GetLastChats();
+            GetLastMessages();
+            GetLastInvites();
+            this.UserLabel.Text   = this._comptroller.MYUSERNAME;
+            this.id_label.Text    = "TODO: TAKE Token"; //this._comptroller.MYID.ToString();
+            this.TokenLabel.Text  = "TOKEN: " + this._comptroller.MYTOKEN;
+            this.chatNameBox.Text = "Chat "   + new Random().Next();
+            this.updater.Interval = 1000;
+            this.updater.Start();
+        }
 
-        void GetLastChats() {
+        private void GetLastChats() {
             if ( this._comptroller == null ) throw new ArgumentNullException( nameof(this._comptroller) );
 
             var lastChatsPaket = new Data( Data.ActionEnum.GET_LAST_CHATS );
@@ -27,54 +43,206 @@ namespace ChatClient {
             this._comptroller.PaketQueue.Enqueue( lastChatsPaket );
         }
 
-        void GetLastMessages() {
+        private void GetLastMessages() {
             if ( this._comptroller == null ) throw new ArgumentNullException( nameof(this._comptroller) );
 
-            var lastChatsPaket = new Data( Data.ActionEnum.GET_LAST_MESSAGES );
+            if ( this._currentChat == -1 ) {
+                ResetMessages();
+                DisplayWelcomeMessage();
+
+                return;
+            }
+
+            var chatSelector   = new ChatInfo( this._currentChat, 0, 0, "" );
+            var lastChatsPaket = Data.GetLastMessages( chatSelector );
 
             this._comptroller.PaketQueue.Enqueue( lastChatsPaket );
         }
 
-
-        int currentChat;
+        private void GetLastInvites() {
+            var lastChatsPaket = Data.GetInvites();
+            this._comptroller.PaketQueue.Enqueue( lastChatsPaket );
+        }
 
         private void ChatUiUpdateInternal(Data packet) {
             switch (packet.Action) {
                 case Data.ActionEnum.SUCCEED_MESSAGE_SEND:
-                    MessageBox.Show( packet.Action.ToString() );
                     break;
                 case Data.ActionEnum.SUCCEED_GET_LAST_MESSAGES:
-                    //if ( packet.DataObj is Message[] ms ) {
-                    //    this.MessageView.Items.Clear();
-                    //    this.MessageView.Items.AddRange( ms.Where( x => x.Chat == this.currentChat ).Select( x => new ListViewItem( x.Text ) ).ToArray() );
-                    //}
-                    //else {
-                    //    Console.WriteLine( packet.DataObj.GetType() );
-                    //}
-                    //
-                    break;
-                case Data.ActionEnum.SUCCEED_GET_LAST_CHATS:
-                    var ci =  packet.Chats;
-                    
-                    if ( ci != null ) {
-                        this.MessageView.Items.Clear();
-                        //this.MessageView.Items.AddRange( ci.Select( x => new ListViewItem(((ChatInfo) x).Title ) ).ToArray() );
+                    var ms = packet.Messages;
+
+                    if ( ms != null ) {
+                        ResetMessages();
+                        this.MessageView.Items.AddRange( ms.Select( x => new ListViewItem( new[] { x.Sender, x.Text, x.Chat.ToString() } ) ).ToArray() );
+                        ScrollLastMessage();
                     }
                     else {
-                        Console.WriteLine( packet.Chats.GetType() );
+                        Console.WriteLine( nameof(packet.Messages) + " Object Null" );
                     }
 
                     break;
+
+                case Data.ActionEnum.SUCCEED_GET_LAST_CHATS:
+                    var ci = packet.Chats;
+
+                    if ( ci != null ) {
+                        ResetChats();
+                        this.ChatsView.Items.AddRange( ci.Select( x => new ListViewItem( new[] { x.Title, x.ChatId.ToString(), x.Creator.ToString() } ) ).ToArray() );
+                    }
+                    else {
+                        Console.WriteLine( nameof(packet.Chats) + " Object Null" );
+                    }
+
+                    break;
+
+                case Data.ActionEnum.SUCCEED_CREATE_CHAT:
+                    GetLastChats();
+                    break;
+
+                case Data.ActionEnum.SUCCEED_DENY_INVITE:
+                case Data.ActionEnum.SUCCEED_ACCEPT_INVITE:
+                    GetLastInvites();
+                    GetLastChats();
+                    break;
+
+                case Data.ActionEnum.SUCCEED_GET_INVITES:
+                    var ii = packet.Invites;
+
+                    if ( ii != null ) {
+                        ResetInvites();
+                        this.invitesView.Items.AddRange( ii.Select( x => new ListViewItem( new[] { x.Sender, x.ChatName, x.Text, x.InviteID.ToString() } ) ).ToArray() );
+                    }
+                    else {
+                        Console.WriteLine( nameof(packet.Invites) + " Object Null" );
+                    }
+
+                    break;
+
                 case Data.ActionEnum.SUCCEED_GET_CHAT_INFO: break;
-                case Data.ActionEnum.SUCCEED_CREATE_CHAT:   break;
                 case Data.ActionEnum.SUCCEED_ADD_TO_CHAT:   break;
                 case Data.ActionEnum.SUCCEED:               break;
-                default:                                    throw new ArgumentOutOfRangeException();
+
+                default: throw new ArgumentOutOfRangeException();
             }
+        }
+
+        private void ResetInvites() { this.invitesView.Items.Clear(); }
+
+        private void ResetChats() {
+            this.ChatsView.Items.Clear();
+            this.ChatsView.Items.Add( new ListViewItem( new[] { "Welcome Chat", "-1", "-1" } ) );
+        }
+
+        private void ResetMessages() {
+            this.MessageView.Items.Clear();
+            this.MessageView.Items.Add( new ListViewItem( new[] { "System", "________________________________________" } ) );
+            this.MessageView.Items.Add( new ListViewItem( new[] { "System", "      Begin of " + this._currentChatName } ) );
+            this.MessageView.Items.Add( new ListViewItem( new[] { "System", "‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾" } ) );
+        }
+
+        private void DisplayWelcomeMessage() {
+            this.MessageView.Items.Add( new ListViewItem( new[] { "System", "_______________________________________" } ) );
+            this.MessageView.Items.Add( new ListViewItem( new[] { "System", "|     Welcome To The Open Cat App     |" } ) );
+            this.MessageView.Items.Add( new ListViewItem( new[] { "System", "|            Feature Text!            |" } ) );
+            this.MessageView.Items.Add( new ListViewItem( new[] { "System", "‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾" } ) );
+        }
+
+        private void ChatsView_SelectedIndexChanged(object sender, EventArgs e) {
+            if ( this.ChatsView.SelectedItems.Count > 0 ) {
+                this._currentChat     = int.Parse( this.ChatsView.SelectedItems[0].SubItems[1].Text );
+                this._currentChatName = this.ChatsView.SelectedItems[0].SubItems[0].Text;
+                GetLastMessages();
+            }
+        }
+
+        private void UserInput_KeyDown(object sender, KeyEventArgs e) {
+            if ( e.KeyData == Keys.Return ) {
+                SendButton_Click( sender, e );
+
+                e.SuppressKeyPress = true;
+            }
+        }
+
+        private void ScrollLastMessage() { this.MessageView.Items[this.MessageView.Items.Count - 1].EnsureVisible(); }
+
+        private void SendButton_Click(object sender, EventArgs e) {
+            string text = this.UserInput.Text;
+
+            if ( string.IsNullOrEmpty( text ) ) {
+                this.UserInput.BackColor = Color.DarkRed;
+                SystemSounds.Exclamation.Play();
+                return;
+            }
+
+            var msg    = new Message( text, this._currentChat );
+            var packet = Data.SendMessage( msg );
+            this._comptroller.PaketQueue.Enqueue( packet );
+
+            this.MessageView.Items.Add( new ListViewItem( new[] { this.UserLabel.Text, text, this._currentChat.ToString() } ) );
+            ScrollLastMessage();
+            this.UserInput.Text = "";
+        }
+
+        private void UserInput_TextChanged(object sender, EventArgs e) { ( sender as Control ).BackColor = this.BackColor; }
+
+        private void Button2_Click(object sender, EventArgs e) {
+            GetLastChats();
+            GetLastMessages();
+            GetLastInvites();
         }
 
         private void Button1_Click(object sender, EventArgs e) { GetLastChats(); }
 
         private void Button3_Click(object sender, EventArgs e) { GetLastMessages(); }
+
+        private void CChat_Click(object sender, EventArgs e) {
+            if ( MessageBox.Show( "Are you Sure you Want To Create The Chat \"" + this.chatNameBox.Text + "\"", "Create Chat", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes ) {
+                var chatToCreate = new ChatInfo( 0, 0, 0, this.chatNameBox.Text );
+
+                var packet = Data.CreateChat( chatToCreate );
+                this._comptroller.PaketQueue.Enqueue( packet );
+            }
+        }
+
+        private void Invite_Click(object sender, EventArgs e) {
+            if ( this._currentChat == -1 ) {
+                MessageBox.Show( "Select a Chat First (Not The Welcome Chat)" );
+                return;
+            }
+
+            if ( MessageBox.Show( "Are you Sure you Want To invite \"" + this.inviteUsernameBox.Text + "\" to chat \"" + this._currentChatName + "\"\nMessage: " + this.inviteMessage.Text, "Invite", MessageBoxButtons.YesNo, MessageBoxIcon.Question ) == DialogResult.Yes ) {
+                var chatToInvite = new InviteInfo( this._currentChat, this.inviteUsernameBox.Text, this.inviteMessage.Text );
+                var packet       = Data.CreateInvite( chatToInvite );
+                this._comptroller.PaketQueue.Enqueue( packet );
+            }
+        }
+
+        private void Updater_Tick(object sender, EventArgs e) {
+            //GetLastMessages();
+            //GetLastChats();
+            this.columnHeader2.Width = -2;
+        }
+
+        private IEnumerable<int> GetInviteId() {
+            if ( this.invitesView.SelectedItems.Count <= 0 ) MessageBox.Show( "Select An Invite First" );
+
+            foreach ( ListViewItem ic in this.invitesView.SelectedItems ) yield return int.Parse( ic.SubItems[3].Text );
+        }
+
+        private void Deny_Click(object sender, EventArgs e) {
+            foreach ( int i in GetInviteId() ) {
+                var packet = Data.DenyInvite( i );
+                this._comptroller.PaketQueue.Enqueue( packet );
+            }
+        }
+
+        private void accept_Click(object sender, EventArgs e) {
+            foreach ( int i in GetInviteId() ) {
+                var packet = Data.AcceptInvite( i );
+                this._comptroller.PaketQueue.Enqueue( packet );
+            }
+        }
+
+        private void Getnvites_Click(object sender, EventArgs e) { GetLastInvites(); }
     }
 }

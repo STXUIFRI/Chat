@@ -29,7 +29,7 @@ namespace ChatServer {
             }
         }
 
-        static readonly Data welcomePaket = new Data( Data.ActionEnum.CONNECTED);
+        static readonly Data welcomePaket = new Data( Data.ActionEnum.CONNECTED );
 
         static public Queue<Data> PacketQueue = new Queue<Data>();
 
@@ -43,7 +43,8 @@ namespace ChatServer {
 
                 foreach ( var data in ProcessReceived( Encoding.UTF8.GetString( recBytes ) ) ) {
                     Data reData = default;
-                    Console.WriteLine( data );
+                    var r   = new Random();
+                    int max = r.Next( 0, 1000 );
 
                     switch (data.Action) {
                         case Data.ActionEnum.CONNECTED: break;
@@ -51,18 +52,42 @@ namespace ChatServer {
                             reData = new Data( Data.ActionEnum.SUCCEED_REGISTER );
                             break;
                         case Data.ActionEnum.LOGIN:
-                            reData = new Data( Data.ActionEnum.SUCCEED_LOGIN);
+                            reData = new Data( Data.ActionEnum.SUCCEED_LOGIN, "0" );
                             break;
                         case Data.ActionEnum.SEND_MESSAGE:
-
                             reData = new Data( Data.ActionEnum.SUCCEED_MESSAGE_SEND );
                             break;
                         case Data.ActionEnum.GET_LAST_MESSAGES:
+
+                            if ( data.Chats != null && data.Chats.Length > 0 ) {
+                                int chatID = data.Chats[0].ChatId;
+                                var msList = new List<Message>();
+
+                                for ( int i = 0; i < max; i++ ) {
+                                    var mn = new Message( "Message number " + i, r.NextDouble() > .5 ? chatID : 5 );
+                                    msList.Add( mn );
+                                }
+
+                                //reData = new Data( Data.ActionEnum.SUCCEED_GET_LAST_MESSAGES,  msList.ToArray() );     TODO:
+                            }
+                            else {
+                                reData = new Data( Data.ActionEnum.ERROR_GET_LAST_MESSAGES, "" );
+                            }
+
                             break;
                         case Data.ActionEnum.GET_LAST_CHATS:
+
+                            var chList = new List<ChatInfo>();
+
+                            for ( int i = 0; i < max; i++ ) {
+                                var ch = new ChatInfo( i, r.Next(), 0, "Chat " + "number " + i );
+                                chList.Add( ch );
+                            }
+
+                            //reData = new Data( Data.ActionEnum.SUCCEED_GET_LAST_CHATS, chList.ToArray()  );       TODO
                             break;
                         case Data.ActionEnum.GET_CHAT_INFO:
-                            reData = new Data( Data.ActionEnum.SUCCEED_GET_CHAT_INFO);
+                            reData = new Data( Data.ActionEnum.SUCCEED_GET_CHAT_INFO );
                             break;
                         case Data.ActionEnum.CREATE_CHAT:
                             reData = new Data( Data.ActionEnum.SUCCEED_CREATE_CHAT );
@@ -86,9 +111,8 @@ namespace ChatServer {
                     PacketQueue.Enqueue( reData );
                 }
 
-
                 while ( PacketQueue.Count > 0 ) {
-                    cl.Client.Send( toJson( PacketQueue.Dequeue() ) ); 
+                    cl.Client.Send( toJson( PacketQueue.Dequeue() ) );
                 }
             }
         }
@@ -137,11 +161,21 @@ namespace ChatServer {
 
             while ( true ) {
                 try {
-                    dataObs.Add( JsonConvert.DeserializeObject<Data>( data ) );
+                    var d = JsonConvert.DeserializeObject<Data>( data );
+                    dataObs.Add( d );
                 } catch (JsonReaderException e) {
                     dataObs.Add( JsonConvert.DeserializeObject<Data>( data.Substring( 0, e.LinePosition ) ) );
                     data = data.Substring( e.LinePosition );
                     continue;
+                } catch (JsonSerializationException e) {
+                    Console.WriteLine( data );
+                    Console.WriteLine( e.LinePosition );
+                    Console.WriteLine( data.Substring( 0, e.LinePosition ) );
+                    Console.WriteLine( data.Substring( e.LinePosition ) );
+                    Console.WriteLine( e.Path );
+
+                    Console.WriteLine( e.Message );
+                    Console.WriteLine( e.StackTrace );
                 }
 
                 break;
