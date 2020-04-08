@@ -43,8 +43,8 @@
             this.panel6 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.panel8 = new System.Windows.Forms.Panel();
-            this.panel7 = new System.Windows.Forms.Panel();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.panel7 = new System.Windows.Forms.Panel();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -213,16 +213,6 @@
             this.panel8.Size = new System.Drawing.Size(223, 242);
             this.panel8.TabIndex = 1;
             // 
-            // panel7
-            // 
-            this.panel7.Controls.Add(this.label1);
-            this.panel7.Controls.Add(this.label2);
-            this.panel7.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panel7.Location = new System.Drawing.Point(0, 0);
-            this.panel7.Name = "panel7";
-            this.panel7.Size = new System.Drawing.Size(177, 242);
-            this.panel7.TabIndex = 0;
-            // 
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
@@ -234,6 +224,16 @@
             this.checkBox1.TabIndex = 2;
             this.checkBox1.Text = "ADMIN Login";
             this.checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // panel7
+            // 
+            this.panel7.Controls.Add(this.label1);
+            this.panel7.Controls.Add(this.label2);
+            this.panel7.Dock = System.Windows.Forms.DockStyle.Left;
+            this.panel7.Location = new System.Drawing.Point(0, 0);
+            this.panel7.Name = "panel7";
+            this.panel7.Size = new System.Drawing.Size(177, 242);
+            this.panel7.TabIndex = 0;
             // 
             // LoginForm
             // 

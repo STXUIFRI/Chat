@@ -1,4 +1,4 @@
-﻿//#define LOCAL_TEST
+﻿#define LOCAL_TEST
 
 using System;
 using System.Data;

@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("Select A Chat To View Messages");
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("Select A Chat To View Messages");
             this.id_label = new System.Windows.Forms.Label();
             this.UserInput = new System.Windows.Forms.TextBox();
             this.UserLabel = new System.Windows.Forms.Label();
@@ -44,6 +44,7 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.panel5 = new System.Windows.Forms.Panel();
             this.button3 = new System.Windows.Forms.Button();
+            this.getnvites = new System.Windows.Forms.Button();
             this.panel3 = new System.Windows.Forms.Panel();
             this.button2 = new System.Windows.Forms.Button();
             this.inviteUsernameBox = new System.Windows.Forms.TextBox();
@@ -78,7 +79,6 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.TokenLabel = new System.Windows.Forms.Label();
             this.updater = new System.Windows.Forms.Timer(this.components);
-            this.getnvites = new System.Windows.Forms.Button();
             this.panel4.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.panel5.SuspendLayout();
@@ -177,7 +177,7 @@
             this.MessageView.HoverSelection = true;
             this.MessageView.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.MessageView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem3});
+            listViewItem1});
             this.MessageView.Location = new System.Drawing.Point(3, 3);
             this.MessageView.Name = "MessageView";
             this.MessageView.Size = new System.Drawing.Size(669, 505);
@@ -272,6 +272,20 @@
             this.button3.Text = "Messages";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.Button3_Click);
+            // 
+            // getnvites
+            // 
+            this.getnvites.AutoSize = true;
+            this.getnvites.Dock = System.Windows.Forms.DockStyle.Left;
+            this.getnvites.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.getnvites.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.getnvites.Location = new System.Drawing.Point(90, 0);
+            this.getnvites.Name = "getnvites";
+            this.getnvites.Size = new System.Drawing.Size(90, 36);
+            this.getnvites.TabIndex = 11;
+            this.getnvites.Text = "Invites";
+            this.getnvites.UseVisualStyleBackColor = true;
+            this.getnvites.Click += new System.EventHandler(this.Getnvites_Click);
             // 
             // panel3
             // 
@@ -434,10 +448,10 @@
             this.tabPage2.BackColor = System.Drawing.Color.DarkSlateBlue;
             this.tabPage2.Controls.Add(this.groupBox3);
             this.tabPage2.Controls.Add(this.groupBox2);
-            this.tabPage2.Location = new System.Drawing.Point(4, 38);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(675, 546);
+            this.tabPage2.Size = new System.Drawing.Size(675, 562);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Utils";
             // 
@@ -664,20 +678,6 @@
             // 
             this.updater.Interval = 10000;
             this.updater.Tick += new System.EventHandler(this.Updater_Tick);
-            // 
-            // getnvites
-            // 
-            this.getnvites.AutoSize = true;
-            this.getnvites.Dock = System.Windows.Forms.DockStyle.Left;
-            this.getnvites.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.getnvites.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.getnvites.Location = new System.Drawing.Point(90, 0);
-            this.getnvites.Name = "getnvites";
-            this.getnvites.Size = new System.Drawing.Size(90, 36);
-            this.getnvites.TabIndex = 11;
-            this.getnvites.Text = "Invites";
-            this.getnvites.UseVisualStyleBackColor = true;
-            this.getnvites.Click += new System.EventHandler(this.Getnvites_Click);
             // 
             // ChatView
             // 

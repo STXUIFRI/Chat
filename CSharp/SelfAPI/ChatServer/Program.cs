@@ -45,6 +45,7 @@ namespace ChatServer {
                     Data reData = default;
                     var r   = new Random();
                     int max = r.Next( 0, 1000 );
+                    Console.WriteLine( data );
 
                     switch (data.Action) {
                         case Data.ActionEnum.CONNECTED: break;

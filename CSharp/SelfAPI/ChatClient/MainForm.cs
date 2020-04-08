@@ -1,16 +1,31 @@
-﻿using System;
+﻿#region using
+
+using System;
 using System.Data;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 using ChatLib;
 
+#endregion
+
 namespace ChatClient {
     public partial class MainForm : Form {
         private readonly ChatClientController _controller;
 
+        public readonly Size ChatSize = new Size( 900, 700 );
+
+        public readonly Size initSize = new Size( 416, 538 );
+
+        private double      starte = 1;
+        private UserControl tohide;
+
+        private UserControl toshow;
+        private DialogPage  toshowtype;
+
         public MainForm() {
             InitializeComponent();
+            Init();
             this._controller             =  new ChatClientController();
             this._controller.ToUI        += ControllerOnToUI;
             this._controller.ToUIOnError += ControllerOnToUIOnError;
@@ -33,9 +48,7 @@ namespace ChatClient {
             Console.WriteLine( obj );
             Console.ResetColor();
 
-            if ( obj == ConnectionState.Closed ) {
-                this.Invoke( new Action( () => AimHelper( DialogPage.CONNECTION_FORM, DialogPage.LOGIN_FORM ) ) );
-            }
+            if ( obj == ConnectionState.Closed ) Invoke( new Action( () => AimHelper( DialogPage.CONNECTION_FORM, DialogPage.LOGIN_FORM ) ) );
         }
 
         private void ControllerOnToUIOnError(Data obj) {
@@ -75,14 +88,10 @@ namespace ChatClient {
                     case Data.ActionEnum.SUCCEED_ACCEPT_INVITE:
                         this.chatView1.ChatUiUpdate( obj );
                         break;
-                    default: break;
                 }
             } ) );
             Console.WriteLine( "UI:" + obj );
         }
-
-
-        public readonly Size initSize = new Size( 416, 538 );
 
         private void ChangeDialog(DialogPage page) {
             switch (page) {
@@ -114,26 +123,14 @@ namespace ChatClient {
             }
 
             if ( page == DialogPage.CHAT_VIEW ) {
-                this.FormBorderStyle = FormBorderStyle.SizableToolWindow;
+                this.FormBorderStyle = FormBorderStyle.Sizable;
                 this.Size            = this.ChatSize;
             }
             else {
                 this.Size            = this.initSize;
-                this.FormBorderStyle = FormBorderStyle.FixedToolWindow;
+                this.FormBorderStyle = FormBorderStyle.FixedDialog;
             }
         }
-
-        public readonly Size ChatSize = new Size( 900, 700 );
-
-        private enum DialogPage {
-            CONNECTION_FORM, CHAT_VIEW, LOGIN_FORM, REGISTER_FORM
-        }
-
-        private UserControl toshow;
-        private UserControl tohide;
-        private DialogPage  toshowtype;
-
-        private double starte = 1;
 
         private void AnimationTimer_Tick(object sender, EventArgs e) {
             this.starte += this.animationTimer.Interval * Math.Max( this.starte / 10, 1 );
@@ -148,7 +145,7 @@ namespace ChatClient {
             this.tohide.Location = new Point( std, 0 );
 
             if ( this.starte >= w ) {
-                bool final = true;
+                var final = true;
 
                 if ( this.toshowtype == DialogPage.CHAT_VIEW ) {
                     if ( this.Width < this.ChatSize.Width ) {
@@ -223,5 +220,38 @@ namespace ChatClient {
             this.tohide.Dock    = DockStyle.None;
             this.animationTimer.Start();
         }
+
+        private enum DialogPage {
+            CONNECTION_FORM, CHAT_VIEW, LOGIN_FORM, REGISTER_FORM
+        }
+
+        #region Init
+
+        private LoginForm      loginForm1;
+        private ConnectionForm connectionForm1;
+        private ChatView       chatView1;
+        private RegisterForm   registerForm1;
+
+        void Init() {
+            SetupControl( this.registerForm1   = new RegisterForm() );
+            SetupControl( this.connectionForm1 = new ConnectionForm() );
+            SetupControl( this.loginForm1      = new LoginForm() );
+            SetupControl( this.chatView1       = new ChatView() );
+        }
+
+        void SetupControl(Control c) {
+            c.Dock      = DockStyle.Fill;
+            c.BackColor = this.BackColor;
+            //c.Font      = this.Font;
+            c.ForeColor = this.ForeColor;
+            this.Controls.Add( c );
+        }
+
+        #endregion
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e) { Environment.Exit( 0 ); }
+
+        static  DebugWindow debugWindow = new DebugWindow();
+        private void        MainForm_HelpButtonClicked(object sender, System.ComponentModel.CancelEventArgs e) { debugWindow.Show(); }
     }
 }
